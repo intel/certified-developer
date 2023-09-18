@@ -1,0 +1,9 @@
+name: lab1
+channels:
+  - defaults
+dependencies:
+  - python=3.9.13
+  - pip:
+    - fastapi==0.103.0
+    - uvicorn==0.23.2
+    - pydantic==2.3.0

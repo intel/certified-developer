@@ -1,0 +1,13 @@
+aliases: []
+creation_timestamp: 1694729403899
+current_stage: Production
+description: ''
+last_updated_timestamp: 1694729436573
+name: apple-harvester
+run_id: a87f68a7f33249a68e7178ef659d013a
+run_link: ''
+source: file:///C:/Users/alvareze/OneDrive - Intel Corporation/Documents/GitHub/frameworks.ai.certificates.mlops/MLOps_Professional/lab3/sample/mlruns/869358362332296850/a87f68a7f33249a68e7178ef659d013a/artifacts/model
+status: READY
+status_message: null
+user_id: null
+version: 1
