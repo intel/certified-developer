@@ -1,1 +1,1 @@
-# frameworks.ai.certificates.mlops
+# frameworks.ai.certified-developer
