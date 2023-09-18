@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/alvareze/OneDrive - Intel Corporation/Documents/GitHub/frameworks.ai.certificates.mlops/MLOps_Professional/lab3/sample/mlruns/869358362332296850/b3cd23c20b6442c1bdb09e086ae0c38e/artifacts
+end_time: 1694729309610
+entry_point_name: ''
+experiment_id: '869358362332296850'
+lifecycle_stage: active
+run_id: b3cd23c20b6442c1bdb09e086ae0c38e
+run_name: delightful-lamb-770
+run_uuid: b3cd23c20b6442c1bdb09e086ae0c38e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1694729309315
+status: 3
+tags: []
+user_id: alvareze

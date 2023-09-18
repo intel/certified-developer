@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/alvareze/OneDrive - Intel Corporation/Documents/GitHub/frameworks.ai.certificates.mlops/MLOps_Professional/lab3/sample/mlruns/869358362332296850/6caf080b17034f6283d48de3d337d50c/artifacts
+end_time: 1694729198624
+entry_point_name: ''
+experiment_id: '869358362332296850'
+lifecycle_stage: active
+run_id: 6caf080b17034f6283d48de3d337d50c
+run_name: languid-asp-510
+run_uuid: 6caf080b17034f6283d48de3d337d50c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1694729198426
+status: 3
+tags: []
+user_id: alvareze
