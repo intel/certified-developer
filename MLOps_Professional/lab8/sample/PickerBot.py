@@ -39,9 +39,11 @@ class PickerBot():
     def create_vectorstore(self, chunk_size: int = 500, overlap: int = 25):
         loader = TextLoader(self.data)
         # Text Splitter
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=overlap)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, 
+                                                       chunk_overlap=overlap)
         # Embed the document and store into chroma DB
-        self.index = VectorstoreIndexCreator(embedding= HuggingFaceEmbeddings(), text_splitter=text_splitter).from_loaders([loader])
+        self.index = VectorstoreIndexCreator(embedding= HuggingFaceEmbeddings(), 
+                                             text_splitter=text_splitter).from_loaders([loader])
 
 
     def inference(self, user_input: str, context_verbosity: bool = False, top_k: int=2):
