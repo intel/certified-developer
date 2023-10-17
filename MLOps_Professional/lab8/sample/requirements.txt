@@ -1,6 +1,6 @@
-langchain==0.0.170
+langchain==0.0.315
 pygpt4all==1.1.0
-gpt4all==1.0.1
+gpt4all==1.0.12
 transformers==4.30.2
 datasets==2.13.1
 tiktoken==0.4.0
