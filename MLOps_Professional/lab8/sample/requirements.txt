@@ -1,4 +1,4 @@
-langchain==0.0.315
+langchain==0.0.317
 pygpt4all==1.1.0
 gpt4all==1.0.12
 transformers==4.30.2
