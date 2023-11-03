@@ -1,7 +1,7 @@
 FROM public.ecr.aws/docker/library/python:3.8
 
 # copy assets over to image
-COPY /src /supportbot_chatbot
+COPY /sample /supportbot_chatbot
 
 # set the working directory
 WORKDIR /supportbot_chatbot
