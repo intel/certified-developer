@@ -1,8 +1,8 @@
-langchain==0.0.315
+langchain==0.0.330
 pygpt4all==1.1.0
 gpt4all==1.0.12
 transformers==4.30.2
-datasets==2.13.1
+datasets==2.14.6
 tiktoken==0.4.0
-chromadb==0.3.26
+chromadb==0.4.15
 sentence_transformers==2.2.2
