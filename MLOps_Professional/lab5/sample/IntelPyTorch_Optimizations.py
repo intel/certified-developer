@@ -9,12 +9,11 @@
 ==============================================================
 '''
 
-import os
 from time import time
-import matplotlib.pyplot as plt
 import torch
 import torchvision
 import intel_extension_for_pytorch as ipex
+import argparse
 
 # Hyperparameters and constants
 LR = 0.001
@@ -25,22 +24,15 @@ DATA = 'datasets/cifar10/'
 """
 Function to run a test case
 """
-def trainModel(train_loader, modelName="myModel", amx=True, dataType="fp32"):
+def trainModel(train_loader, modelName="myModel", dtype="fp32"):
     """
     Input parameters
         train_loader: a torch DataLoader object containing the training data
         modelName: a string representing the name of the model
-        amx: set to False to disable AMX on BF16, default True otherwise
-        dataType: the data type for model parameters, supported values - fp32, bf16
+        dtype: the data type for model parameters, supported values - fp32, bf16
     Return value
         training_time: the time in seconds it takes to train the model
     """
-    
-    # Configure environment variable
-    if not amx and "bf16" == dataType:
-        os.environ["ONEDNN_MAX_CPU_ISA"] = "AVX512_CORE_BF16"
-    else:
-        os.environ["ONEDNN_MAX_CPU_ISA"] = "DEFAULT"
 
     # Initialize the model 
     model = torchvision.models.resnet50()
@@ -50,7 +42,7 @@ def trainModel(train_loader, modelName="myModel", amx=True, dataType="fp32"):
     model.train()
     
     # Optimize with BF16 or FP32 (default)
-    if "bf16" == dataType:
+    if "bf16" == dtype:
         model, optimizer = ipex.optimize(model, optimizer=optimizer, dtype=torch.bfloat16)
     else:
         model, optimizer = ipex.optimize(model, optimizer=optimizer)
@@ -60,7 +52,7 @@ def trainModel(train_loader, modelName="myModel", amx=True, dataType="fp32"):
     start_time = time()
     for batch_idx, (data, target) in enumerate(train_loader):
         optimizer.zero_grad()
-        if "bf16" == dataType:
+        if "bf16" == dtype:
             with torch.cpu.amp.autocast():   # Auto Mixed Precision
                 # Setting memory_format to torch.channels_last could improve performance with 4D input data. This is optional.
                 data = data.to(memory_format=torch.channels_last)
@@ -91,11 +83,10 @@ def trainModel(train_loader, modelName="myModel", amx=True, dataType="fp32"):
 """
 Perform all types of training in main function
 """
-def main():
+def main(FLAGS):
     # Check if hardware supports AMX
     import sys
     sys.path.append('../../')
-    import version_check
     from cpuinfo import get_cpu_info
     info = get_cpu_info()
     flags = info['flags']
@@ -122,45 +113,27 @@ def main():
     )
     train_loader = torch.utils.data.DataLoader(
             dataset=train_dataset,
-            batch_size=128
+            batch_size=FLAGS.batch_size
     )
 
     # Train models and acquire training times
-    print("Training model with FP32")
-    fp32_training_time = trainModel(train_loader, modelName="fp32", dataType="fp32")
-    print("Training model with BF16 without AMX")
-    bf16_noAmx_training_time = trainModel(train_loader, modelName="bf16_noAmx", amx=False, dataType="bf16")
-    print("Training model with BF16 with AMX")
-    bf16_withAmx_training_time = trainModel(train_loader, modelName="bf16_withAmx", dataType="bf16")
-
-    # Training time results
+    print(f"Training model with {FLAGS.data_type}")
+    training_time = trainModel(train_loader, modelName=f"{FLAGS.data_type}", dtype=f"{FLAGS.data_type}")
     print("Summary")
-    print("FP32 training time: %.3f" %fp32_training_time)
-    print("BF16 without AMX training time: %.3f" %bf16_noAmx_training_time)
-    print("BF16 with AMX training time: %.3f" %bf16_withAmx_training_time)
-
-    # Create bar chart with training time results
-    plt.figure()
-    plt.title("ResNet Training Time")
-    plt.xlabel("Test Case")
-    plt.ylabel("Training Time (seconds)")
-    plt.bar(["FP32", "BF16 no AMX", "BF16 with AMX"], [fp32_training_time, bf16_noAmx_training_time, bf16_withAmx_training_time])
-
-    # Calculate speedup when using AMX
-    speedup_from_fp32 = fp32_training_time / bf16_withAmx_training_time
-    print("BF16 with AMX is %.2fX faster than FP32" %speedup_from_fp32)
-    speedup_from_bf16 = bf16_noAmx_training_time / bf16_withAmx_training_time
-    print("BF16 with AMX is %.2fX faster than BF16 without AMX" %speedup_from_bf16)
-
-    # Create bar chart with speedup results
-    plt.figure()
-    plt.title("AMX Speedup")
-    plt.xlabel("Test Case")
-    plt.ylabel("Speedup")
-    plt.bar(["FP32", "BF16 no AMX"], [speedup_from_fp32, speedup_from_bf16])
-    
-    plt.show()
+    print("training time: %.3f" %training_time)
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-dtype',
+                        '--data_type',
+                        type=str,
+                        default="fp32",
+                        help="pytorch data type options available are fp32 and bf16")
+    parser.add_argument('-batch',
+                        '--batch_size',
+                        type=int,
+                        default=128,
+                        help="set training batch size")
+    FLAGS = parser.parse_args()
+    main(FLAGS)
     print('[CODE_SAMPLE_COMPLETED_SUCCESFULLY]')

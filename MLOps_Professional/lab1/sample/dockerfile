@@ -1,7 +1,7 @@
 FROM public.ecr.aws/docker/library/python:3.8
 
 # copy assets over to image
-COPY /sample /sample
+COPY . /sample
 
 # set the working directory
 WORKDIR /sample

@@ -1,9 +1,0 @@
-name: lab5
-channels:
-  - defaults
-dependencies:
-  - python=3.9.13
-  - pip:
-    - torch==2.0.0
-    - torchvision==0.15.1
-    - intel_extension_for_pytorch==2.0.0
