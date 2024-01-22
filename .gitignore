@@ -1,2 +1,11 @@
 __pycache__
 .DS*
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Conda
+.env/
+.conda/
+conda_env/
