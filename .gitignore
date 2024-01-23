@@ -1,0 +1,12 @@
+
+.DS*
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Conda
+.env/
+.conda/
+conda_env/
+.ipynb_checkpoints/
