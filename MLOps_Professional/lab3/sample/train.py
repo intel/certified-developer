@@ -25,15 +25,15 @@ warnings.filterwarnings("ignore")
 
 class HarvesterMaintenance():
     
-    def __init__(self, model_name: str):
-        self.model_name = model_name
+    def __init__(self, identifier: str):
+        self.identifier = identifier
         self.file = ''
         self.y_train = ''
         self.y_test = ''
         self.X_train_scaled_transformed = ''
         self.X_test_scaled_transformed = ''
         self.accuracy_scr = ''
-        self.model_path = ''
+        self.storage_path = ''
         self.parameters = ''
         self.robust_scaler = ''
         self.run_id = ''
@@ -165,7 +165,7 @@ class HarvesterMaintenance():
         
         return self.accuracy_scr
     
-    def save(self, model_path):
+    def save(self, storage_path):
         """saves trained model to path
 
         Parameters
@@ -174,11 +174,11 @@ class HarvesterMaintenance():
             path where trained model should be saved
         """
 
-        self.model_path = model_path +  self.model_name + '.joblib'
-        self.scaler_path = model_path +  self.model_name + '_scaler.joblib'
+        self.storage_path = storage_path +  self.identifier + '.joblib'
+        self.scaler_path = storage_path +  self.identifier + '_scaler.joblib'
         
         logger.info("Saving model")
-        with open( self.model_path, "wb") as fh:
+        with open( self.storage_path, "wb") as fh:
             joblib.dump(self.xgb_model, fh.name)
         
         logger.info("Saving Scaler")
