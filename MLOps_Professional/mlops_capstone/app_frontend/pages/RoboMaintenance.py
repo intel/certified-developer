@@ -21,12 +21,12 @@ with app_tab:
     
     st.markdown('#### Predictive Maintenance Model Training')
     
-    data_file = st.text_input('Training Data File Path',key='data', value='/home/ubuntu/capstone/store/datasets/robot_maintenance/train.csv')
+    data_file = st.text_input('Training Data File Path',key='data', value='/home/ubuntu/certified-developer/MLOps_Professional/mlops_capstone/store/datasets/robot_maintenance/train.pkl')
     model_name = st.text_input('Model Name',key='model name', help='The name of the model without extensions', value='model')
     model_path = st.text_input('Model Save Path',key='model path', help='Provide the path without file name', value='./')
     test_size = st.slider('Percentage of data saved for Testing',min_value=5, max_value=50, value=25, step=5)
     ncpu = st.number_input('Threads', min_value=2, max_value=16, step=2)
-    mlflow_tracking_uri = st.text_input('Tracking URI',key='uri', value='/home/ubuntu/capstone/store/models/robot_maintenance')
+    mlflow_tracking_uri = st.text_input('Tracking URI',key='uri', value='/home/ubuntu/certified-developer/MLOps_Professional/mlops_capstone/store/models/robot_maintenance')
     mlflow_new_experiment = st.text_input('New Experiment Name',key='new exp')
     mlflow_experiment = st.text_input('Existing Experiment Name',key='existing exp') 
     
@@ -36,11 +36,11 @@ with app_tab:
     
     st.markdown('#### Predictive Maintenance Analysis')
     
-    model_name = st.text_input('Model Name',key='model name option', value='Capstone')
+    model_name = st.text_input('Model Name',key='model name option', value='model')
     stage = manufacturer = st.selectbox('Model Stage', options = ['Staging','Production'])
-    model_run_id = st.text_input('Run ID',key='model id', value='9b22758eeb2d41b4a141d6dadfe7115d')
-    scaler_file_name = st.text_input('Scaler File Name',key='scalar life', value='model_scaler.joblib')
-    scaler_destination = st.text_input('Scaler Destination',key='scalerdest', value= '/home/ubuntu/capstone/store/outputs/robot_maintenance') 
+    model_run_id = st.text_input('Run ID',key='model id')
+    scaler_file_name = st.text_input('Scaler File Name',key='scalar file', value='model_scaler.joblib')
+    scaler_destination = st.text_input('Scaler Destination',key='scalerdest', value= '/home/ubuntu/certified-developer/MLOps_Professional/mlops_capstone/store/outputs/robot_maintenance') 
     
     col21, col22, col23 = st.columns(3)
 
@@ -68,7 +68,7 @@ with app_tab:
        'Number_Repairs':num_repairs, 'Manufacturer':manufacturer, 
        'Generation':generation,'Lubrication':lubrication_type, 'Product_Assignment':product_assignment}]
 
-    # logic for inference API connections
+# logic for inference API connections
             
 # Help tab frontend below
     
