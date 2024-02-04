@@ -170,7 +170,7 @@ class HarvesterMaintenance():
 
         Parameters
         ----------
-        model_path : str
+        storage_path : str
             path where trained model should be saved
         """
 
