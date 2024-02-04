@@ -3,11 +3,11 @@ import mlflow
 import numpy as np
 import pandas as pd
 
-def inference(identifier: str, stage: str, model_run_id: int, scaler_file_name: str, 
+def inference(identifier: str, stage: str, run_id: int, scaler_file_name: str, 
               scaler_destination: str, data: str):
     
     # retrieve scaler
-    mlflow.artifacts.download_artifacts(run_id = model_run_id, 
+    mlflow.artifacts.download_artifacts(run_id = run_id, 
                                         artifact_path=scaler_file_name,
                                         dst_path=scaler_destination)
     

@@ -38,7 +38,7 @@ with app_tab:
     
     identifier = st.text_input('Model Name',key='model name option', value='model')
     stage = manufacturer = st.selectbox('Model Stage', options = ['Staging','Production'])
-    model_run_id = st.text_input('Run ID',key='model id')
+    run_id = st.text_input('Run ID',key='model id')
     scaler_file_name = st.text_input('Scaler File Name',key='scalar file', value='model_scaler.joblib')
     scaler_destination = st.text_input('Scaler Destination',key='scalerdest', value= '/home/ubuntu/certified-developer/MLOps_Professional/mlops_capstone/store/outputs/robot_maintenance') 
     

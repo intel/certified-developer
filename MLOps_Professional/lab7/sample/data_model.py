@@ -12,7 +12,7 @@ class TrainPayload(BaseModel):
 
 class PredictionPayload(BaseModel):
     sample: list
-    model_run_id: str
+    run_id: str
     scaler_file_name: str
     scaler_destination: str = './'
     d4p_file_name: str

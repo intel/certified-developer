@@ -14,6 +14,6 @@ class PredictionPayload(BaseModel):
     identifier: str
     stage: str
     sample: list
-    model_run_id: str
+    run_id: str
     scaler_file_name: str
     scaler_destination: str = './'

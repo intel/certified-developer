@@ -59,7 +59,7 @@ async def train(payload:TrainPayload):
 async def predict(payload:PredictionPayload):
     
     sample = pd.json_normalize(payload.sample)
-    results = inference(model_run_id = payload.model_run_id, scaler_file_name = payload.scaler_file_name, 
+    results = inference(run_id = payload.run_id, scaler_file_name = payload.scaler_file_name, 
                         scaler_destination = payload.scaler_destination, d4p_file_name = payload.d4p_file_name,
                         d4p_destination = payload.d4p_destination, data = sample)
     return {"msg": "Completed Analysis", "Maintenance Recommendation": results}
