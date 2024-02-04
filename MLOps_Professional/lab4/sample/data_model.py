@@ -2,8 +2,8 @@ from pydantic import BaseModel
  
 class TrainPayload(BaseModel):
     file: str
-    model_name: str
-    model_path: str
+    identifier: str
+    storage_path: str
     test_size: int = 25  
     ncpu: int = 4 
     mlflow_tracking_uri: str
@@ -11,7 +11,7 @@ class TrainPayload(BaseModel):
     mlflow_experiment: str = None
 
 class PredictionPayload(BaseModel):
-    model_name: str
+    identifier: str
     stage: str
     sample: list
     model_run_id: str

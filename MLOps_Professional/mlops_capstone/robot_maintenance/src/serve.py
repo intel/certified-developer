@@ -41,7 +41,7 @@ async def train(payload:TrainPayload):
     dict
         Accuracy metrics and other logger feedback on training progress.
     """
-    model = RoboMaintenance(payload.model_name)
+    model = RoboMaintenance(payload.identifier)
     model.mlflow_tracking(tracking_uri=payload.mlflow_tracking_uri, 
                           new_experiment=payload.mlflow_new_experiment,
                           experiment= payload.mlflow_experiment)
@@ -50,7 +50,7 @@ async def train(payload:TrainPayload):
     logger.info("Data has been successfully processed")
     model.train(payload.ncpu)
     logger.info("Maintenance  Model Successfully Trained")
-    model.save(payload.model_path)
+    model.save(payload.storage_path)
     logger.info("Saved Maintenance Model")
     accuracy_score = model.validate()
     return {"msg": "Model trained succesfully", "validation scores": accuracy_score}
@@ -59,7 +59,7 @@ async def train(payload:TrainPayload):
 async def predict(payload:PredictionPayload):
     
     sample = pd.json_normalize(payload.sample)
-    results = inference(model_name = payload.model_name, stage = payload.stage,
+    results = inference(identifier = payload.identifier, stage = payload.stage,
                         model_run_id = payload.model_run_id, scaler_file_name = payload.scaler_file_name, 
                         scaler_destination = payload.scaler_destination, data = sample)
     return {"msg": "Completed Analysis", "Maintenance Recommendation": results}

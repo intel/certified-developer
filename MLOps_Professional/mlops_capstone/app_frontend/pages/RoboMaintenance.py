@@ -22,8 +22,8 @@ with app_tab:
     st.markdown('#### Predictive Maintenance Model Training')
     
     data_file = st.text_input('Training Data File Path',key='data', value='/home/ubuntu/certified-developer/MLOps_Professional/mlops_capstone/store/datasets/robot_maintenance/train.pkl')
-    model_name = st.text_input('Model Name',key='model name', help='The name of the model without extensions', value='model')
-    model_path = st.text_input('Model Save Path',key='model path', help='Provide the path without file name', value='./')
+    identifier = st.text_input('Model Name',key='model name', help='The name of the model without extensions', value='model')
+    storage_path = st.text_input('Model Save Path',key='model path', help='Provide the path without file name', value='./')
     test_size = st.slider('Percentage of data saved for Testing',min_value=5, max_value=50, value=25, step=5)
     ncpu = st.number_input('Threads', min_value=2, max_value=16, step=2)
     mlflow_tracking_uri = st.text_input('Tracking URI',key='uri', value='/home/ubuntu/certified-developer/MLOps_Professional/mlops_capstone/store/models/robot_maintenance')
@@ -36,7 +36,7 @@ with app_tab:
     
     st.markdown('#### Predictive Maintenance Analysis')
     
-    model_name = st.text_input('Model Name',key='model name option', value='model')
+    identifier = st.text_input('Model Name',key='model name option', value='model')
     stage = manufacturer = st.selectbox('Model Stage', options = ['Staging','Production'])
     model_run_id = st.text_input('Run ID',key='model id')
     scaler_file_name = st.text_input('Scaler File Name',key='scalar file', value='model_scaler.joblib')

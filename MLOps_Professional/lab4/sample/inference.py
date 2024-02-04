@@ -3,7 +3,7 @@ import mlflow
 import numpy as np
 import pandas as pd
 
-def inference(model_name: str, stage: str, model_run_id: int, scaler_file_name: str, 
+def inference(identifier: str, stage: str, model_run_id: int, scaler_file_name: str, 
               scaler_destination: str, data: str):
     
     # retrieve scaler
@@ -16,7 +16,7 @@ def inference(model_name: str, stage: str, model_run_id: int, scaler_file_name: 
         robust_scaler = joblib.load(fh.name)
     
     # load model
-    model = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{stage}")
+    model = mlflow.pyfunc.load_model(model_uri=f"models:/{identifier}/{stage}")
         
     # process data sample
     Categorical_Variables = pd.get_dummies(
