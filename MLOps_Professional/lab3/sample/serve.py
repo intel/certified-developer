@@ -39,7 +39,7 @@ async def train(payload:TrainPayload):
     dict
         Accuracy metrics and other logger feedback on training progress.
     """
-    model = HarvesterMaintenance(payload.model_name)
+    model = HarvesterMaintenance(payload.name)
     model.mlflow_tracking(tracking_uri=payload.mlflow_tracking_uri, 
                           new_experiment=payload.mlflow_new_experiment,
                           experiment= payload.mlflow_experiment)
@@ -48,10 +48,10 @@ async def train(payload:TrainPayload):
     logger.info("Data has been successfully processed")
     model.train(payload.ncpu)
     logger.info("Maintenance Apple Harvester Model Successfully Trained")
-    model.save(payload.model_path)
+    model.save(payload.path)
     logger.info("Saved Harvester Maintenance Model")
     accuracy_score = model.validate()
     return {"msg": "Model trained succesfully", "validation scores": accuracy_score}
 
 if __name__ == "__main__":
-    uvicorn.run("serve:app", host="0.0.0.0", port=5000, log_level="info")
+    uvicorn.run("serve:app", host="0.0.0.0", port=5003, log_level="info")
