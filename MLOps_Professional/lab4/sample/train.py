@@ -15,8 +15,8 @@ Module to train and prediction using XGBoost Classifier
 '''
 
 import sys
-import logging
-import warnings
+from logging import basicConfig, DEBUG, getLogger
+from warnings import filterwarnings
 import joblib
 import mlflow
 
@@ -27,12 +27,12 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import RobustScaler
 
-# !/usr/bin/env python
-# coding: utf-8
-# pylint: disable=import-error
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-warnings.filterwarnings("ignore")
+from __init__ import here, this as settings
+
+
+basicConfig(level=DEBUG)
+logger = getLogger(__name__)
+filterwarnings("ignore")
 
 
 class HarvesterMaintenance():
@@ -58,7 +58,7 @@ class HarvesterMaintenance():
         mlflow.set_tracking_uri(tracking_uri)
         
         # creates new experiment if no experiment is specified
-        if experiment == None:
+        if experiment is None:
             mlflow.create_experiment(new_experiment)
             self.active_experiment = new_experiment
             mlflow.set_experiment(new_experiment)
