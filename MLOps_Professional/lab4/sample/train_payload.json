@@ -1,9 +1,9 @@
 {
     "file": "sensor_data.pkl",
-    "_model_name": "model",
-    "_model_path": "./",
+    "model_name": "model",
+    "model_path": "./",
     "test_size": 25,
     "ncpu": 4,
     "mlflow_tracking_uri": "./mlruns",
-    "mlflow_new_experiment": "apples03"
+    "mlflow_new_experiment": "apples00"
 }

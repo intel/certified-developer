@@ -1,22 +1,8 @@
-"""
-Please write words here:
-
-pls
-
-...
-
-
-"""
-
-
-
 '''
 Module to train and prediction using XGBoost Classifier
 '''
 
 import sys
-from logging import basicConfig, DEBUG, getLogger
-from warnings import filterwarnings
 import joblib
 import mlflow
 
@@ -27,18 +13,17 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import RobustScaler
 
-from __init__ import here, this as settings
+from __init__ import Settings
 
 
-basicConfig(level=DEBUG)
-logger = getLogger(__name__)
-filterwarnings("ignore")
+s = Settings(__file__)
+logger = s.logger
 
 
 class HarvesterMaintenance():
     
-    def __init__(self, model_name: str):
-        self.model_name = model_name
+    def __init__(self, _model_name: str):
+        self.model_name = _model_name
         self.file = ''
         self.y_train = ''
         self.y_test = ''
@@ -52,7 +37,12 @@ class HarvesterMaintenance():
         self.active_experiment = ''
         self.xgb_model = ''
         
-    def mlflow_tracking(self, tracking_uri: str = './mlflow_tracking', experiment: str = None, new_experiment: str = None):
+    def mlflow_tracking(
+            self, 
+            tracking_uri: str = './mlflow_tracking', 
+            experiment: str = None, 
+            new_experiment: str = None
+            ):
         
         # sets tracking URI
         mlflow.set_tracking_uri(tracking_uri)
