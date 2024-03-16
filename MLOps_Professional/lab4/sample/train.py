@@ -22,8 +22,8 @@ logger = s.logger
 
 class HarvesterMaintenance():
     
-    def __init__(self, _model_name: str):
-        self.model_name = _model_name
+    def __init__(self, model_name: str):
+        self.model_name = model_name
         self.file = ''
         self.y_train = ''
         self.y_test = ''

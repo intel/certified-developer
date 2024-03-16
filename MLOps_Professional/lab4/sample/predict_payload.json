@@ -1,0 +1,19 @@
+{
+    "model_name": "Apples",
+    "stage": "Production",
+    "model_run_id": "3df0aef454224e0ea8bfc0bf9bea94ce",
+    "scaler_file_name": "model_scaler.joblib",
+    "scaler_destination": "./scaler/scaler.joblib",
+    "data": "apples01",
+    "sample": [{
+        "Age": 30,
+        "Temperature": 55,
+        "Last_Maintenance": 3,
+        "Motor_Current": 2,
+        "Number_Repairs": 4,
+        "Manufacturer": "B",
+        "Generation": "Gen1",
+        "Lubrication": "LTA",
+        "Product_Assignment": "Gala"
+    }]
+}
