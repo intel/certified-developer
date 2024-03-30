@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "mlo-lab5"
+version = "0.1.0"
+description = ""
+authors = ["Alex Beckwith <57322567+witzbeck@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "*"
+torch = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

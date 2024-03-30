@@ -8,7 +8,7 @@ this = Path(__file__)
 here = this.parent
 
 
-@dataclass
+@dataclass()
 class Settings:
     init_path: str
     settings_path: Path = here
