@@ -6,8 +6,10 @@ authors = ["Alex Beckwith <57322567+witzbeck@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "*"
-torch = "*"
+python = "^3.11"
+numpy = "^1.26"
+torch = "^2.2.2"
+torchvision = "^0.17.2"
 
 [build-system]
 requires = ["poetry-core"]
