@@ -6,11 +6,24 @@ authors = ["Alex Beckwith <57322567+witzbeck@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-numpy = "^1.26"
-torch = "^2.2.2"
-torchvision = "^0.17.2"
+python = "^3.10"
+alexlib = { path = "../../../alexlib", develop = true }
+numpy = "1.26.4"
+torch = "2.2.2"
+torchvision = "0.17.2"
+intel-extension-for-pytorch = "2.2.0"
+oneccl_bind_pt = "2.2.0+cpu"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "supplemental"
+
+[[tool.poetry.source]]
+name = "intel-pytorch-extension"
+url = "https://pytorch-extension.intel.com/release-whl/stable/cpu/us/"
+priority = "supplemental"
