@@ -140,9 +140,7 @@ class HarvesterMaintenance():
         with mlflow.start_run() as run:
             mlflow.xgboost.autolog()   
             xgb_train = xgb.DMatrix(self.X_train_scaled_transformed, label=np.array(self.y_train))
-            
-            print
-            
+                      
         self.xgb_model = xgb.train(self.parameters, xgb_train, num_boost_round=100)
         
 
