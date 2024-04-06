@@ -1,6 +1,9 @@
 
 .DS*
 
+# datasets
+datasets/
+
 # Models & Runs
 mlruns/
 *.joblib

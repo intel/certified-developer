@@ -1,6 +1,6 @@
 {
-    "batch_size": [128],
-    "data_type": ["bf16", "fp32"],
+    "batch_size": [64],
+    "data_type": ["fp32", "fp16", "int8", "int4"],
     "OMP_NUM_THREADS": [1, 2, 4, 6, 8],
     "ONEDNN_MAX_CPU_ISA": ["AVX512_CORE_VNNI", "AVX512_CORE_AMX"]
 }

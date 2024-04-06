@@ -8,6 +8,8 @@ from logging import getLogger, warning
 from os import environ
 from pathlib import Path
 
+from pandas import DataFrame
+
 from __init__ import here
 from IntelPyTorch_Optimizations import main as mainfunc
 
@@ -68,8 +70,19 @@ class ExperimentParameters:
         return [self.record_object(*record) for record in self.record_params]
 
 
+def run_experiment(experiment: ExperimentRecord) -> dict:
+    experiment.set_envs()
+    record = experiment.attrs
+    record["training_time"] = mainfunc(experiment)
+    return record
+
+
+def run_experiments(parameters: ExperimentParameters) -> DataFrame:
+    records = [run_experiment(experiment) for experiment in parameters.experiments]
+    return DataFrame.from_records(records)
+
+
 if __name__ == '__main__':
     parameters = ExperimentParameters()
-    
-    for prod in parameters.experiments:
-        print(prod)
+    results = run_experiments(parameters)
+    print(results)

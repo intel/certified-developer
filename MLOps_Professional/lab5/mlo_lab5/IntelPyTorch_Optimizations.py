@@ -87,17 +87,17 @@ def main(FLAGS):
     # Check if hardware supports AMX
     import sys
     sys.path.append('../../')
-    from cpuinfo import get_cpu_info
-    info = get_cpu_info()
-    flags = info['flags']
-    amx_supported = False
-    for flag in flags:
-        if "amx" in flag:
-            amx_supported = True
-            break
-    if not amx_supported:
-        print("AMX is not supported on current hardware. Code sample cannot be run.\n")
-        return
+    #from cpuinfo import get_cpu_info
+    #info = get_cpu_info()
+    #flags = info['flags']
+    #amx_supported = False
+    #for flag in flags:
+    #    if "amx" in flag:
+    #        amx_supported = True
+    #        break
+    #if not amx_supported:
+    #    print("AMX is not supported on current hardware. Code sample cannot be run.\n")
+    #    return
     
     # Load dataset
     transform = torchvision.transforms.Compose([
