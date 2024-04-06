@@ -9,6 +9,7 @@
 ==============================================================
 '''
 
+from socketserver import ThreadingUnixStreamServer
 from time import time
 import torch
 import torchvision
@@ -42,14 +43,23 @@ def trainModel(train_loader, modelName="myModel", dtype="fp32"):
     model.train()
     
     # Optimize with BF16 or FP32 (default)
-    if "bf16" == dtype:
-        model, optimizer = ipex.optimize(model, optimizer=optimizer, dtype=torch.bfloat16)
+    dtypes = {
+        "fp32": torch.float32,
+        "bf16": torch.bfloat16,
+        "float": torch.float,
+        "int32": torch.int32,
+        "int16": torch.int16,
+        "int8": torch.int8,
+    }
+    if dtype not in dtypes:
+        dtype = None
     else:
-        model, optimizer = ipex.optimize(model, optimizer=optimizer)
+        dtype = dtypes[dtype]
+    model, optimizer = ipex.optimize(model, optimizer=optimizer, dtype=dtype)
 
     # Train the model
     num_batches = len(train_loader)
-    start_time = time()
+    round_time = start_time = time()
     for batch_idx, (data, target) in enumerate(train_loader):
         optimizer.zero_grad()
         if "bf16" == dtype:
@@ -67,10 +77,12 @@ def trainModel(train_loader, modelName="myModel", dtype="fp32"):
             loss.backward()
         optimizer.step()
         if 0 == (batch_idx+1) % 50:
-            print("Batch %d/%d complete" %(batch_idx+1, num_batches))
+            this_time = time()
+            print(f"Batch {batch_idx + 1}/{num_batches} completed in {this_time - round_time:.3f} seconds")
+            round_time = this_time
     end_time = time()
-    training_time = end_time-start_time
-    print("Training took %.3f seconds" %(training_time))
+    training_time = end_time - start_time
+    print(f"Training took {training_time:.3f} seconds")
     
     # Save a checkpoint of the trained model
     torch.save({
@@ -101,7 +113,7 @@ def main(FLAGS):
     
     # Load dataset
     transform = torchvision.transforms.Compose([
-    torchvision.transforms.Resize((224, 224)),
+    torchvision.transforms.Resize((24, 24)),
     torchvision.transforms.ToTensor(),
     torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])

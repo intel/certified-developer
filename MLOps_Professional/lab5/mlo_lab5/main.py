@@ -85,4 +85,5 @@ def run_experiments(parameters: ExperimentParameters) -> DataFrame:
 if __name__ == '__main__':
     parameters = ExperimentParameters()
     results = run_experiments(parameters)
+    results.to_csv(here.parent / "data/results.csv")
     print(results)
