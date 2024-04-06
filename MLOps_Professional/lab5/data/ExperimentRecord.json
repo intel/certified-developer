@@ -1,6 +1,0 @@
-{
-    "name": "Experiment {}",
-    "dtype": ["fp32", "bf16"],
-    "nthreads": [1, 2, 4, 8],
-    "ncores": [1, 2]
-}

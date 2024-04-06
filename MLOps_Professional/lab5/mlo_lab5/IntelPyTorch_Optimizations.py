@@ -121,6 +121,7 @@ def main(FLAGS):
     training_time = trainModel(train_loader, modelName=f"{FLAGS.data_type}", dtype=f"{FLAGS.data_type}")
     print("Summary")
     print("training time: %.3f" %training_time)
+    return training_time
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -1,13 +1,6 @@
 {
-    "KMP_BLOCKTIME": "",
-    "KMP_AFFINITY": "",
-    "OMP_NUM_THREADS": 6,
-    "ONEDNN_MAX_CPU_ISA": "AVX512_CORE_VNNI",
-    "MKL_VERBOSE": 0,
-    "MKL_NUM_THREADS": 6,
-    "MKL_DYNAMIC": false,
-    "MKL_THREADING_LAYER": "INTEL",
-    "MKL_ENABLE_INSTRUCTIONS": "AVX512_CORE",
-    "MKL_ENABLE_AVX512": true,
-    "MKL_ENABLE_AVX512_CORE": true
+    "batch_size": [128],
+    "data_type": ["bf16", "fp32"],
+    "OMP_NUM_THREADS": [1, 2, 4, 6, 8],
+    "ONEDNN_MAX_CPU_ISA": ["AVX512_CORE_VNNI", "AVX512_CORE_AMX"]
 }
