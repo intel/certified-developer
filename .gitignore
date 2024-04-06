@@ -1,8 +1,9 @@
 
 .DS*
 
-# datasets
+# data
 datasets/
+cache/
 
 # Models & Runs
 mlruns/

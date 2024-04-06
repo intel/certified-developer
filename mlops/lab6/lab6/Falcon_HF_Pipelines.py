@@ -1,3 +1,4 @@
+from pathlib import Path
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import transformers
 import torch
@@ -5,20 +6,24 @@ import argparse
 import time
 
 
+# Set the cache directory to avoid downloading the model multiple times
+here = Path(__file__).parent
+cache_dir = here / "cache"
+
+
 def main(FLAGS):
     
-    model = f"tiiuae/falcon-{FLAGS.falcon_version}"
+    model = transformers.FalconForCausalLM(transformers.FalconConfig(version="7b"))
     
     
-    tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(model, cache_dir=cache_dir, use_fast=True)
     
         
     generator = transformers.pipeline(
         "text-generation",
         model=model,
         tokenizer=tokenizer,
-        torch_dtype=torch.int,
-        trust_remote_code=True,
+        torch_dtype=torch.float,
         device_map="auto",
     )
 

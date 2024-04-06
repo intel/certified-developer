@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "lab6"
+version = "0.1.0"
+description = ""
+authors = ["Alex Beckwith <57322567+witzbeck@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+transformers = "*"
+torch = "*"
+accelerate = "*"
+einops = "*"
+safetensors = "^0.4.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "supplemental"
