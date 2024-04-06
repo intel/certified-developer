@@ -1,5 +1,11 @@
 
+# Byte-compiled / optimized / DLL files
 .DS*
+
+# envs
+env/
+venv/
+.[Ee][Nn][Vv]
 
 # data
 datasets/
