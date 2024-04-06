@@ -17,7 +17,7 @@ def main(FLAGS):
         "text-generation",
         model=model,
         tokenizer=tokenizer,
-        torch_dtype=torch.bfloat16,
+        torch_dtype=torch.int,
         trust_remote_code=True,
         device_map="auto",
     )

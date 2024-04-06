@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "..",
+			"name": "mlops"
+		}
+	],
+	"settings": {
+		"python.venvPath": "/home/vscode/.cache/pypoetry/virtualenvs"
+	}
+}
