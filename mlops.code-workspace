@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": "labtools",
+			"name": "tools"
+		},
+		{
+			"path": "mlops/lab7",
+			"name": "lab"
+		}
+	],
+	"settings": {
+		"editor.defaultFormatter": "GitHub.copilot",
+	    "git.openRepositoryInParentFolders": "always",
+		"git.enableSmartCommit": true,
+		"git.confirmSync": false,
+		"python.poetryPath": "poetry",
+		"python.analysis.enablePytestSupport": true,
+		"python.languageServer": "Default",
+		"python.analysis.autoFormatStrings": true,
+		"python.analysis.autoSearchPaths": true,
+		"python.analysis.autoImportCompletions": true,
+		"python.testing.pytestEnabled": true,
+		"python.testing.pytestPath": "poetry run pytest",
+		"python.testing.unittestEnabled": false,
+		"python.testing.nosetestsEnabled": false,
+		"[python]": {
+			"editor.formatOnType": true,
+			"editor.defaultFormatter": "charliermarsh.ruff"
+		},
+		"ruff.codeAction.disableRuleComment": {
+			"enable": false
+		}
+	}
+}
