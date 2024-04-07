@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mlflow:
+    image: mlflow/mlflow:latest
+    command: mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlflow/artifacts --host 0.0.0.0
+    volumes:
+      - ./mlflow:/mlflow
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+  
+  fastapi:
+    image: tiangolo/uvicorn-gunicorn-fastapi:python3.12
+    volumes:
+      - ./app:/app
+      - ./mlflow:/mlflow
+    ports:
+      - "8000:80"
+    depends_on:
+      - mlflow
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    
+  python_dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/app
+      - ./mlflow:/mlflow
+      - ./python_dev:/usr/src/app
+    depends_on:
+      - mlflow
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000

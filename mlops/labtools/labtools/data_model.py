@@ -7,7 +7,7 @@ headers = {"Content-Type": "application/json"}
 
 @dataclass(slots=True)
 class DataPayload:
-    """"""
+    """base class for data structure to send to the API"""
 
     @property
     def attrs(self) -> dict:
