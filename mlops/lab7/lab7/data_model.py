@@ -1,6 +1,8 @@
-from pydantic import BaseModel
- 
-class TrainPayload(BaseModel):
+from dataclasses import dataclass
+
+
+@dataclass
+class TrainPayload:
     file: str
     model_name: str
     model_path: str
@@ -10,7 +12,9 @@ class TrainPayload(BaseModel):
     mlflow_new_experiment: str = None
     mlflow_experiment: str = None
 
-class PredictionPayload(BaseModel):
+
+@dataclass
+class PredictionPayload:
     sample: list
     model_run_id: str
     scaler_file_name: str

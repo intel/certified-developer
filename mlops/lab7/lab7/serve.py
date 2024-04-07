@@ -1,18 +1,16 @@
-import uvicorn
-import logging
-import warnings
-import pandas as pd
+from logging import getLogger
 
 from fastapi import FastAPI
+from pandas import json_normalize
+from uvicorn import run
+
 from data_model import TrainPayload, PredictionPayload
-from train import HarvesterMaintenance
 from inference import inference
+from train import HarvesterMaintenance
+
 
 app = FastAPI()
-
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-warnings.filterwarnings("ignore")
+logger = getLogger(__name__)
 
 
 @app.get("/ping")
@@ -24,10 +22,11 @@ async def ping():
     API response
         response from server on health status
     """
-    return {"message":"Server is Running"}
+    return {"message": "Server is Running"}
+
 
 @app.post("/train")
-async def train(payload:TrainPayload):
+async def train(payload: TrainPayload) -> dict[str:str]:
     """Training Endpoint
     This endpoint process raw data and trains an XGBoost Classifier
 
@@ -42,9 +41,11 @@ async def train(payload:TrainPayload):
         Accuracy metrics and other logger feedback on training progress.
     """
     model = HarvesterMaintenance(payload.model_name)
-    model.mlflow_tracking(tracking_uri=payload.mlflow_tracking_uri, 
-                          new_experiment=payload.mlflow_new_experiment,
-                          experiment= payload.mlflow_experiment)
+    model.mlflow_tracking(
+        tracking_uri=payload.mlflow_tracking_uri,
+        new_experiment=payload.mlflow_new_experiment,
+        experiment=payload.mlflow_experiment,
+    )
     logger.info("Configured Experiment and Tracking URI for MLFlow")
     model.process_data(payload.file, payload.test_size)
     logger.info("Data has been successfully processed")
@@ -55,14 +56,20 @@ async def train(payload:TrainPayload):
     accuracy_score = model.validate()
     return {"msg": "Model trained succesfully", "validation scores": accuracy_score}
 
+
 @app.post("/predict")
-async def predict(payload:PredictionPayload):
-    
-    sample = pd.json_normalize(payload.sample)
-    results = inference(model_run_id = payload.model_run_id, scaler_file_name = payload.scaler_file_name, 
-                        scaler_destination = payload.scaler_destination, d4p_file_name = payload.d4p_file_name,
-                        d4p_destination = payload.d4p_destination, data = sample)
+async def predict(payload: PredictionPayload) -> dict[str:str]:
+    sample = json_normalize(payload.sample)
+    results = inference(
+        model_run_id=payload.model_run_id,
+        scaler_file_name=payload.scaler_file_name,
+        scaler_destination=payload.scaler_destination,
+        d4p_file_name=payload.d4p_file_name,
+        d4p_destination=payload.d4p_destination,
+        data=sample,
+    )
     return {"msg": "Completed Analysis", "Maintenance Recommendation": results}
 
+
 if __name__ == "__main__":
-    uvicorn.run("serve:app", host="0.0.0.0", port=5000, log_level="info")
+    run("serve:app", host="0.0.0.0", port=5000, log_level="info")
