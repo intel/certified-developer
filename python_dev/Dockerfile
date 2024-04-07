@@ -46,7 +46,7 @@ RUN git clone https://github.com/witzbeck/intel_mlops /intel_mlops && \
     git checkout dev
 
 # Set the working directory to the cloned repository.
-WORKDIR /intel_mlops/mlops/labtools
+WORKDIR /intel_mlops/mlops/lab7
 
 # Install the project dependencies.
 RUN poetry config virtualenvs.in-project true && \

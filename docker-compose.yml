@@ -14,7 +14,7 @@ services:
   fastapi:
     image: tiangolo/uvicorn-gunicorn-fastapi
     volumes:
-      - ../lab7/lab7:/app
+      - ./mlops/lab7/lab7:/app
       - ./mlflow:/mlflow
     ports:
       - "8000:80"
