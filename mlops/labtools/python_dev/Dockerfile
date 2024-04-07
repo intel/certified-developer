@@ -12,18 +12,18 @@ ENV PATH="/root/.local/bin:${PATH}"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
-    build-essential
+    build-essential \
     libssl-dev \
     zlib1g-dev \
     libbz2-dev \
-    libreadline-dev 
+    libreadline-dev \
     libsqlite3-dev \
     libpq-dev \
     wget \
     llvm \
     libncursesw5-dev \
     xz-utils \
-    tk-dev 
+    tk-dev \
     libxml2-dev \
     libxmlsec1-dev \
     libffi-dev \
