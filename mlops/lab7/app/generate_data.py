@@ -8,7 +8,7 @@ from numpy import where
 from numpy.random import choice, randint, normal, seed
 from pandas import DataFrame, concat, get_dummies
 
-from lab7.__init__ import getLogger, DATA_SIZE, data_path
+from app.__init__ import getLogger, DATA_SIZE, data_path
 
 logger = getLogger(__name__)
 

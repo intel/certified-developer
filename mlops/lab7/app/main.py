@@ -4,9 +4,9 @@ from fastapi import FastAPI
 from pandas import json_normalize
 from uvicorn import run
 
-from lab7.data_model import TrainPayload, PredictionPayload
-from lab7.inference import inference
-from lab7.train import HarvesterMaintenance
+from app.data_model import TrainPayload, PredictionPayload
+from app.inference import inference
+from app.train import HarvesterMaintenance
 
 
 app = FastAPI()

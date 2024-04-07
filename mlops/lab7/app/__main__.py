@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 
 from requests import post
 
-from labtools.data_model import TrainPayload, PredictionPayload, headers
+from app.data_model import TrainPayload, PredictionPayload, headers
 
 train_payload = TrainPayload(
     file="sensor_data.pkl",

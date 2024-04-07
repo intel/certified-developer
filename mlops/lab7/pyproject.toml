@@ -1,9 +1,8 @@
 [tool.poetry]
-name = "lab7"
-version = "0.1.0"
+name = "app"
+version = "0.2.0"
 description = ""
 authors = ["Alex Beckwith <57322567+witzbeck@users.noreply.github.com>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -18,7 +17,6 @@ scikit-learn = "*"
 mlflow = "*"
 xgboost = "*"
 daal4py = "*"
-labtools = {path = "../../labtools", develop = true}
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,6 +1,10 @@
 {
 	"folders": [
 		{
+			"path": ".",
+			"name": "root"
+		},
+		{
 			"path": "labtools",
 			"name": "tools"
 		},
@@ -11,7 +15,7 @@
 	],
 	"settings": {
 		"editor.defaultFormatter": "GitHub.copilot",
-	    "git.openRepositoryInParentFolders": "always",
+		"git.openRepositoryInParentFolders": "always",
 		"git.enableSmartCommit": true,
 		"git.confirmSync": false,
 		"python.poetryPath": "poetry",
@@ -23,13 +27,15 @@
 		"python.testing.pytestEnabled": true,
 		"python.testing.pytestPath": "poetry run pytest",
 		"python.testing.unittestEnabled": false,
-		"python.testing.nosetestsEnabled": false,
 		"[python]": {
 			"editor.formatOnType": true,
 			"editor.defaultFormatter": "charliermarsh.ruff"
 		},
 		"ruff.codeAction.disableRuleComment": {
 			"enable": false
+		},
+		"[jsonc]": {
+			"editor.defaultFormatter": "vscode.json-language-features"
 		}
 	}
 }

@@ -1,0 +1,12 @@
+-e .
+fastapi
+uvicorn
+pydantic
+einops
+safetensors
+pandas
+numpy
+scikit-learn
+mlflow
+xgboost
+daal4py

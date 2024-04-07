@@ -12,26 +12,13 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
   
   fastapi:
-    image: tiangolo/uvicorn-gunicorn-fastapi
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - ./mlops/lab7/lab7:/app
       - ./mlflow:/mlflow
     ports:
       - "8000:80"
-    depends_on:
-      - mlflow
-    environment:
-      - MLFLOW_TRACKING_URI=http://mlflow:5000
-    command: uvicorn serve:app --host 0.0.0.0 --port 80 --log-level debug
-    
-  python_dev:
-    build:
-      context: ./python_dev
-      dockerfile: Dockerfile
-    volumes:
-      - ./app:/app
-      - ./mlflow:/mlflow
-      - ./python_dev:/usr/src/app
     depends_on:
       - mlflow
     environment:
