@@ -14,6 +14,7 @@ cache/
 
 # Models & Runs
 mlruns/
+mlflow/
 *.joblib
 *.pkl
 

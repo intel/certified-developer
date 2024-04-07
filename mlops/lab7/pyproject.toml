@@ -17,6 +17,7 @@ scikit-learn = "*"
 mlflow = "*"
 xgboost = "*"
 daal4py = "*"
+setuptools = "*"
 
 [build-system]
 requires = ["poetry-core"]

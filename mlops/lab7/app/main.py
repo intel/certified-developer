@@ -1,4 +1,5 @@
 from logging import getLogger
+from typing import Any
 
 from fastapi import FastAPI
 from pandas import json_normalize
@@ -26,7 +27,7 @@ async def ping():
 
 
 @app.post("/train")
-async def train(payload: TrainPayload) -> dict[str:str]:
+async def train(payload: TrainPayload) -> dict[str, Any]:
     """Training Endpoint
     This endpoint process raw data and trains an XGBoost Classifier
 
@@ -58,7 +59,7 @@ async def train(payload: TrainPayload) -> dict[str:str]:
 
 
 @app.post("/predict")
-async def predict(payload: PredictionPayload) -> dict[str:str]:
+async def predict(payload: PredictionPayload) -> dict[str, Any]:
     sample = json_normalize(payload.sample)
     results = inference(
         model_run_id=payload.model_run_id,
@@ -72,4 +73,4 @@ async def predict(payload: PredictionPayload) -> dict[str:str]:
 
 
 if __name__ == "__main__":
-    run("serve:app", host="0.0.0.0", port=5000, log_level="info")
+    run("main:app", host="0.0.0.0", port=8000, log_level="info")

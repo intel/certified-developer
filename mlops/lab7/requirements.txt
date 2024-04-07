@@ -10,3 +10,4 @@ scikit-learn
 mlflow
 xgboost
 daal4py
+setuptools

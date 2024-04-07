@@ -28,6 +28,10 @@ for key, value in pairs:
         debug(f"{key} already set to {environ[key]}")
 
 
-basicConfig(level=DEBUG)
+logconfig = basicConfig(level=DEBUG, filename=str(here.parent / "app.log"))
 
 DATA_SIZE = int(getenv("DATA_SIZE", 25000))
+URL_BASE = getenv("URL_BASE", "http://localhost:8000")
+MLFLOW_TRACKING_URI = getenv("MLFLOW_TRACKING_URI")
+MLFLOW_EXPERIMENT_NAME = getenv("MLFLOW_EXPERIMENT_NAME")
+MLFLOW_MODEL_NAME = getenv("MLFLOW_MODEL_NAME")

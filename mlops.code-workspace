@@ -24,6 +24,7 @@
 		"python.analysis.autoFormatStrings": true,
 		"python.analysis.autoSearchPaths": true,
 		"python.analysis.autoImportCompletions": true,
+		"python.defaultInterpreterPath": "./.venv/bin/python",
 		"python.testing.pytestEnabled": true,
 		"python.testing.pytestPath": "poetry run pytest",
 		"python.testing.unittestEnabled": false,
