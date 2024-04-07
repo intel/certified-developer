@@ -1,4 +1,8 @@
-from labtools.data_model import TrainPayload, PredictionPayload
+from argparse import ArgumentParser
+
+from requests import post
+
+from labtools.data_model import TrainPayload, PredictionPayload, headers
 
 train_payload = TrainPayload(
     file="sensor_data.pkl",
@@ -29,3 +33,14 @@ prediction_payload = PredictionPayload(
     scaler_destination="./",
     d4p_destination="./d4p",
 )
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument("--train", action="store_true", help="Train the model")
+    parser.add_argument("--predict", action="store_true", help="Predict using the model")
+    args = parser.parse_args()
+    if args.train:
+        post(train_payload.url, headers=headers, data=train_payload.json_str)
+    if args.predict:
+        post(prediction_payload.url, headers=headers, data=prediction_payload.json_str)

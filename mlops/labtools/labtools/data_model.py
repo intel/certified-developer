@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from json import dumps
+from os import getenv
 
 
 headers = {"Content-Type": "application/json"}
@@ -8,6 +9,19 @@ headers = {"Content-Type": "application/json"}
 @dataclass(slots=True)
 class DataPayload:
     """base class for data structure to send to the API"""
+    endpoint: str
+
+    @property
+    def url_base(self) -> str:
+        return getenv("URL_BASE")
+
+    @property
+    def url(self) -> str:
+        if self.url_base is None:
+            raise ValueError("URL_BASE is not set")
+        if self.endpoint is None:
+            raise ValueError("endpoint is not set")
+        return f"{self.url_base}{self.endpoint}"
 
     @property
     def attrs(self) -> dict:
@@ -32,6 +46,7 @@ class TrainPayload(DataPayload):
     mlflow_tracking_uri: str = None
     mlflow_new_experiment: str = None
     mlflow_experiment: str = None
+    endpoint: str = "/train"
 
 
 @dataclass(slots=True)
@@ -42,3 +57,4 @@ class PredictionPayload(DataPayload):
     scaler_destination: str = "./"
     d4p_file_name: str = None
     d4p_destination: str = None
+    endpoint: str = "/predict"
