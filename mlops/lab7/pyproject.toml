@@ -18,6 +18,7 @@ scikit-learn = "*"
 mlflow = "*"
 xgboost = "*"
 daal4py = "*"
+labtools = {path = "../labtools", develop = true}
 
 [build-system]
 requires = ["poetry-core"]

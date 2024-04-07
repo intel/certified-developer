@@ -882,6 +882,19 @@ files = [
 ]
 
 [[package]]
+name = "labtools"
+version = "0.1.0"
+description = "tools developed during the completion of mlops pro labs to enhance the learning experience"
+optional = false
+python-versions = "^3.9"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../labtools"
+
+[[package]]
 name = "mako"
 version = "1.3.2"
 description = "A super-fast templating language that borrows the best ideas from the existing templating languages."
@@ -2156,4 +2169,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "67a52bde5c1663eb46cfd59d042ba6ea408aa15b7526c6f4bd7cef65b619a060"
+content-hash = "c01fc6e038418016c79f0cb2acf48a983e3165778ebaabb795d119fc09c17649"
