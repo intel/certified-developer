@@ -34,11 +34,11 @@ prediction_payload = dict(
         }
     ],
     model_run_id=getenv("MLFLOW_RUN_ID"),
-    scaler_file_name="model_scaler.joblib",
+    scaler_file_name=f"{getenv("MLFLOW_MODEL_NAME")}_scaler.joblib",
     scaler_destination="./",
     d4p_destination="./d4p",
+    d4p_file_name= f"{getenv("MLFLOW_MODEL_NAME")}.joblib",
 )
-
 
 if __name__ == "__main__":
     print("URL_BASE: ", URL_BASE)

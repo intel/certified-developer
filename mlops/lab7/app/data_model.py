@@ -1,3 +1,4 @@
+from os import getenv
 from typing import Any
 
 from pydantic import BaseModel
@@ -24,5 +25,5 @@ class PredictionPayload(BaseModel):
     model_run_id: str
     scaler_file_name: str
     scaler_destination: str = "./"
-    d4p_file_name: str = None
-    d4p_destination: str = None
+    d4p_file_name: str = f"{getenv("MLFLOW_MODEL_NAME")}.joblib"
+    d4p_destination: str = "./d4p"
