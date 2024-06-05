@@ -2,7 +2,7 @@
 
 This repository contains hands-on labs that help you practice and build skills associated with Intel® Certified Developer – MLOps Professional Certification exam.
 
-Whether you are deploying an AI project into production or adding AI to an existing application, building a performant and scalable machine learning operations (MLOps) environment is crucial to maximizing your resources. This curriculum teaches you to incorporate compute awareness into the AI solution design process to maximize performance across the AI pipeline. 
+Whether you are deploying an AI project into production or adding AI to an existing application, building a performant and scalable machine learning operations (MLOps) environment is crucial to maximizing your resources. This curriculum teaches you to incorporate compute awareness into the AI solution design process to maximize performance across the AI pipeline.  
 
 ## Table of Contents
 
