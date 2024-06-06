@@ -4,11 +4,11 @@ import numpy as np
 import pandas as pd
 import daal4py as d4p
 
-def inference(model_run_id: int, scaler_file_name: str, scaler_destination: str, 
+def inference(run_id: int, scaler_file_name: str, scaler_destination: str, 
               d4p_file_name: str, d4p_destination: str, data: str):
     
     # retrieve scaler
-    mlflow.artifacts.download_artifacts(run_id = model_run_id, 
+    mlflow.artifacts.download_artifacts(run_id = run_id, 
                                         artifact_path=scaler_file_name,
                                         dst_path=scaler_destination)
 
@@ -17,7 +17,7 @@ def inference(model_run_id: int, scaler_file_name: str, scaler_destination: str,
         robust_scaler = joblib.load(fh.name)
 
     # retrieve d4p model
-    mlflow.artifacts.download_artifacts(run_id = model_run_id, 
+    mlflow.artifacts.download_artifacts(run_id = run_id, 
                                         artifact_path=d4p_file_name,
                                         dst_path=d4p_destination)
     

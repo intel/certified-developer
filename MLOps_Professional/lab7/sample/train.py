@@ -28,8 +28,8 @@ warnings.filterwarnings("ignore")
 
 class HarvesterMaintenance():
     
-    def __init__(self, model_name: str):
-        self.model_name = model_name
+    def __init__(self, identifier: str):
+        self.identifier = identifier
         self.file = ''
         self.y_train = ''
         self.y_test = ''
@@ -37,7 +37,7 @@ class HarvesterMaintenance():
         self.X_test_scaled_transformed = ''
         self.d4p_model = ''
         self.accuracy_scr = ''
-        self.model_path = ''
+        self.storage_path = ''
         self.parameters = ''
         self.robust_scaler = ''
         self.run_id = ''
@@ -173,20 +173,20 @@ class HarvesterMaintenance():
         return self.d4p_acc
 
     
-    def save(self, model_path):
+    def save(self, storage_path):
         """Logs scaler abd d4p models as mlflow artifacts.
 
         Parameters
         ----------
-        model_path : str
+        storage_path : str
             path where trained model should be saved
         """
 
-        self.model_path = model_path +  self.model_name + '.joblib'
-        self.scaler_path = model_path +  self.model_name + '_scaler.joblib'
+        self.storage_path = storage_path +  self.identifier + '.joblib'
+        self.scaler_path = storage_path +  self.identifier + '_scaler.joblib'
         
         logger.info("Saving model")
-        with open(self.model_path, "wb") as fh:
+        with open(self.storage_path, "wb") as fh:
             joblib.dump(self.d4p_model, fh.name)
         
         logger.info("Saving Scaler")
@@ -196,5 +196,5 @@ class HarvesterMaintenance():
         logger.info("Saving Scaler and d4p model as MLFLow Artifact")
         with mlflow.start_run(self.run_id):
             mlflow.log_artifact(self.scaler_path)
-            mlflow.log_artifact(self.model_path)
+            mlflow.log_artifact(self.storage_path)
         
