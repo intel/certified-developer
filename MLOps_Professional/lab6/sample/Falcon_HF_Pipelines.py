@@ -18,7 +18,7 @@ def main(FLAGS):
         model=model,
         tokenizer=tokenizer,
         torch_dtype=torch.bfloat16,
-        trust_remote_code=True,
+        trust_remote_code=False,
         device_map="auto",
     )
 
@@ -34,7 +34,7 @@ def main(FLAGS):
             sequences = generator( 
             f""" {user_input}""",
             max_length=FLAGS.max_length,
-            do_sample=False,
+            do_sample=True,
             top_k=FLAGS.top_k,
             num_return_sequences=1,
             eos_token_id=tokenizer.eos_token_id,)
