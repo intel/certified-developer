@@ -27,15 +27,15 @@ warnings.filterwarnings("ignore")
 
 class HarvesterMaintenance():
     
-    def __init__(self, model_name: str):
-        self.model_name = model_name
+    def __init__(self, identifier: str):
+        self.identifier = identifier
         self.file = ''
         self.y_train = ''
         self.y_test = ''
         self.X_train_scaled_transformed = ''
         self.X_test_scaled_transformed = ''
         self.accuracy_scr = ''
-        self.model_path = ''
+        self.storage_path = ''
         self.parameters = ''
         self.robust_scaler = ''
         self.run_id = ''
@@ -168,16 +168,16 @@ class HarvesterMaintenance():
         
         return self.accuracy_scr
     
-    def save(self, model_path):
+    def save(self, storage_path):
         """Logs scaler as mlflow artifact.
 
         Parameters
         ----------
-        model_path : str
+        storage_path : str
             path where trained model should be saved
         """
         
-        self.scaler_path = model_path +  self.model_name + '_scaler.joblib'
+        self.scaler_path = storage_path +  self.identifier + '_scaler.joblib'
         
         logger.info("Saving Scaler")
         with open(self.scaler_path, "wb") as fh:

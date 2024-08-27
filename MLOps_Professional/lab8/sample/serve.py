@@ -11,9 +11,9 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 app = FastAPI()
 
-def load_gpt4allj(model_path: str, n_threads: int=6, max_tokens: int=50, repeat_penalty: float = 1.20, n_batch: int=6, top_k: int=1):
+def load_gpt4allj(storage_path: str, n_threads: int=6, max_tokens: int=50, repeat_penalty: float = 1.20, n_batch: int=6, top_k: int=1):
 
-    if not os.path.isfile(model_path): 
+    if not os.path.isfile(storage_path): 
 
         # download model
         url = "https://huggingface.co/nomic-ai/gpt4all-falcon-ggml/resolve/main/ggml-model-gpt4all-falcon-q4_0.bin"
@@ -22,7 +22,7 @@ def load_gpt4allj(model_path: str, n_threads: int=6, max_tokens: int=50, repeat_
 
         # open the file in binary mode and write the contents of the response to it in chunks
         # This is a large file, so be prepared to wait.
-        with open(model_path, 'wb') as f:
+        with open(storage_path, 'wb') as f:
             for chunk in tqdm(response.iter_content(chunk_size=10000)):
                 if chunk:
                     f.write(chunk)
@@ -32,14 +32,14 @@ def load_gpt4allj(model_path: str, n_threads: int=6, max_tokens: int=50, repeat_
     # Callbacks support token-wise streaming
     callbacks = [StreamingStdOutCallbackHandler()]
     # Verbose is required to pass to the callback manager
-    llm = GPT4All(model=model_path, callbacks=callbacks, verbose=True, 
+    llm = GPT4All(model=storage_path, callbacks=callbacks, verbose=True, 
                   n_threads=n_threads, n_predict=max_tokens, repeat_penalty=repeat_penalty, 
                   n_batch=n_batch, top_k=top_k)
     
     return llm
 
 
-gptj = load_gpt4allj(model_path='./models/pickerbot/ggml-model-gpt4all-falcon-q4_0.bin', 
+gptj = load_gpt4allj(storage_path='./models/pickerbot/ggml-model-gpt4all-falcon-q4_0.bin', 
                      n_threads=15, max_tokens=100, repeat_penalty = 1.20, n_batch=15, top_k=1)
 
 
