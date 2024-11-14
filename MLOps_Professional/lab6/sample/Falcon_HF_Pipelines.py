@@ -10,7 +10,7 @@ def main(FLAGS):
     model = f"tiiuae/falcon-{FLAGS.falcon_version}"
     
     
-    tokenizer = AutoTokenizer.from_pretrained(model, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(model)
     
         
     generator = transformers.pipeline(
@@ -18,7 +18,7 @@ def main(FLAGS):
         model=model,
         tokenizer=tokenizer,
         torch_dtype=torch.bfloat16,
-        trust_remote_code=False,
+        trust_remote_code=True,
         device_map="auto",
     )
 
@@ -38,13 +38,15 @@ def main(FLAGS):
             top_k=FLAGS.top_k,
             num_return_sequences=1,
             eos_token_id=tokenizer.eos_token_id,)
+        else:
+            break
 
         inference_time = time.time() - start
         
         for seq in sequences:
-         print(f"Result: {seq['generated_text']}")
+            print(f"Result: {seq['generated_text']}")
          
-        print(f'Total Inference Time: {inference_time} seconds')
+        print(f'Total Inference Time: {inference_time:.2f} seconds')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
