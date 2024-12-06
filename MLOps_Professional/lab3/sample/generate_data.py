@@ -96,12 +96,12 @@ data['Asset_Label'] = np.where((data.Lubrication == 'LTC'),
 data.drop('Temp_Var', axis=1, inplace=True)
 
 Categorical_Variables = pd.get_dummies(
-                           data[[
-                               'Manufacturer',
-                               'Generation',
-                               'Lubrication',
-                               'Product_Assignment']],
-                           drop_first=False)
+    data[[
+        'Manufacturer',
+        'Generation',
+        'Lubrication',
+        'Product_Assignment']],
+    drop_first=False)
 data = pd.concat([data, Categorical_Variables], axis=1)
 data.drop(['Manufacturer', 'Generation', 'Lubrication', 'Product_Assignment'], axis=1, inplace=True)
 
