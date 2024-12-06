@@ -23,11 +23,12 @@ async def ping():
     API response
         response from server on health status
     """
-    return {"message":"Server is Running"}
+    return {"message": "Server is Running"}
+
 
 @app.post("/maintenance")
-async def predict(payload:MaintenancePayload):
-    
+async def predict(payload: MaintenancePayload):
+
     maintenance_result = test_maintenance(payload.temperature)
     return {"msg": "Completed Analysis", "Maintenance Status": maintenance_result}
 

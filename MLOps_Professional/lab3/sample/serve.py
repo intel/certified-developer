@@ -22,10 +22,11 @@ async def ping():
     API response
         response from server on health status
     """
-    return {"message":"Server is Running"}
+    return {"message": "Server is Running"}
+
 
 @app.post("/train")
-async def train(payload:TrainPayload):
+async def train(payload: TrainPayload):
     """Training Endpoint
     This endpoint process raw data and trains an XGBoost Classifier
 
@@ -40,9 +41,9 @@ async def train(payload:TrainPayload):
         Accuracy metrics and other logger feedback on training progress.
     """
     model = HarvesterMaintenance(payload.model_name)
-    model.mlflow_tracking(tracking_uri=payload.mlflow_tracking_uri, 
+    model.mlflow_tracking(tracking_uri=payload.mlflow_tracking_uri,
                           new_experiment=payload.mlflow_new_experiment,
-                          experiment= payload.mlflow_experiment)
+                          experiment=payload.mlflow_experiment)
     logger.info("Configured Experiment and Tracking URI for MLFlow")
     model.process_data(payload.file, payload.test_size)
     logger.info("Data has been successfully processed")

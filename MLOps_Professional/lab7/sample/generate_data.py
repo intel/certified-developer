@@ -49,7 +49,8 @@ data = pd.DataFrame({"Age": np.random.choice(range(0, 25), dsize, replace=True),
 
 # Generating our target variable Asset_Label
 logger.info('Generating our target variable Asset_Label')
-data['Asset_Label'] = np.random.choice(range(0, 2), dsize, replace=True, p=[0.99, 0.01])
+data['Asset_Label'] = np.random.choice(
+    range(0, 2), dsize, replace=True, p=[0.99, 0.01])
 
 # When age is 0-5 and over 20 change Asset_Label to 1
 logger.info('Creating correlation between our variables and our target variable')
@@ -64,7 +65,8 @@ data['Asset_Label'] = np.where((data.Temperature >= 150) & (data.Temperature <= 
 
 # When Manufacturer is A, E, or H change Asset_Label to have  80% 1's
 logger.info("When Manufacturer is A, E, or H change Asset_Label to 1")
-data['Temp_Var'] = np.random.choice(range(0, 2), dsize, replace=True, p=[0.2, 0.8])
+data['Temp_Var'] = np.random.choice(
+    range(0, 2), dsize, replace=True, p=[0.2, 0.8])
 data['Asset_Label'] = np.where((data.Manufacturer == 'A') |
                                (data.Manufacturer == 'E') |
                                (data.Manufacturer == 'H'),
@@ -72,8 +74,10 @@ data['Asset_Label'] = np.where((data.Manufacturer == 'A') |
                                data.Asset_Label)
 
 # When Generation is Gen1 or Gen3 change Asset_Label to have 50% to 1's
-logger.info("When Generation is Gen1 or Gen3 change Asset_Label to have 50% to 0's")
-data['Temp_Var'] = np.random.choice(range(0, 2), dsize, replace=True, p=[0.5, 0.5])
+logger.info(
+    "When Generation is Gen1 or Gen3 change Asset_Label to have 50% to 0's")
+data['Temp_Var'] = np.random.choice(
+    range(0, 2), dsize, replace=True, p=[0.5, 0.5])
 data['Asset_Label'] = np.where((data.Generation == 'Gen1') | (data.Generation == 'Gen3'),
                                data.Temp_Var,
                                data.Asset_Label)
@@ -81,14 +85,16 @@ data['Asset_Label'] = np.where((data.Generation == 'Gen1') | (data.Generation ==
 
 # When Product Assignment is Pill B change Asset_Label to have 70% to 1's
 logger.info("When District is Pill B change Asset_Label to have 70% to 1's")
-data['Temp_Var'] = np.random.choice(range(0, 2), dsize, replace=True, p=[0.3, 0.7])
+data['Temp_Var'] = np.random.choice(
+    range(0, 2), dsize, replace=True, p=[0.3, 0.7])
 data['Asset_Label'] = np.where((data.Product_Assignment == 'Gala'),
                                data.Temp_Var, data.Asset_Label)
 
 
 # When Lubrication is LTC change Asset_Label to have 75% to 1's
 logger.info("When Lubrication is LTC change Asset_Label to have 75% to 1's")
-data['Temp_Var'] = np.random.choice(range(0, 2), dsize, replace=True, p=[0.25, 0.75])
+data['Temp_Var'] = np.random.choice(
+    range(0, 2), dsize, replace=True, p=[0.25, 0.75])
 data['Asset_Label'] = np.where((data.Lubrication == 'LTC'),
                                data.Temp_Var,
                                data.Asset_Label)
@@ -96,14 +102,15 @@ data['Asset_Label'] = np.where((data.Lubrication == 'LTC'),
 data.drop('Temp_Var', axis=1, inplace=True)
 
 Categorical_Variables = pd.get_dummies(
-                           data[[
-                               'Manufacturer',
-                               'Generation',
-                               'Lubrication',
-                               'Product_Assignment']],
-                           drop_first=False)
+    data[[
+        'Manufacturer',
+        'Generation',
+        'Lubrication',
+        'Product_Assignment']],
+    drop_first=False)
 data = pd.concat([data, Categorical_Variables], axis=1)
-data.drop(['Manufacturer', 'Generation', 'Lubrication', 'Product_Assignment'], axis=1, inplace=True)
+data.drop(['Manufacturer', 'Generation', 'Lubrication',
+          'Product_Assignment'], axis=1, inplace=True)
 
 data = data.astype({'Motor_Current': 'float64', 'Number_Repairs': 'float64'})
 
