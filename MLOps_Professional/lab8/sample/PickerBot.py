@@ -46,8 +46,8 @@ class PickerBot():
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size, chunk_overlap=overlap)
         # Embed the document and store into chroma DB
-        self.index = VectorstoreIndexCreator(embedding=HuggingFaceEmbeddings(
-        ), text_splitter=text_splitter).from_loaders([loader])
+        self.index = VectorstoreIndexCreator(
+            embedding=HuggingFaceEmbeddings(), text_splitter=text_splitter).from_loaders([loader])
 
     def inference(self, user_input: str, context_verbosity: bool = False, top_k: int = 2):
         # perform similarity search and retrieve the context from our documents
