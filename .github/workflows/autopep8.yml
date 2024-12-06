@@ -1,0 +1,41 @@
+name: Check code formatting with autopep8
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "main" ]
+
+
+permissions:
+  contents: read
+
+jobs:
+  python-code-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout code
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+
+      - name: Setup python
+        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
+        with:
+          python-version: "3.10"
+          architecture: "x64"
+
+      - name: Display Python Version
+        run: python --version
+
+      - name: Install packages
+        run: pip install autopep8
+
+      - name: Check code formatting style
+        run: |
+          autopep8 --exit-code --recursive --in-place --aggressive --aggressive . --verbose --max-line-length 200

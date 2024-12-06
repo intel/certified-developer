@@ -1,0 +1,32 @@
+name: Bandit Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "main" ]
+  schedule:
+    - cron: '40 5 * * 5'
+  workflow_dispatch:
+
+
+permissions:
+  contents: read
+
+jobs:
+  bandit_scan:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit
+
+      - name: Perform Bandit Analysis
+        uses: PyCQA/bandit-action@8a1b30610f61f3f792fe7556e888c9d7dffa52de # v1.0.0
+        with:
+          severity: "all"
+          confidence: "all"
