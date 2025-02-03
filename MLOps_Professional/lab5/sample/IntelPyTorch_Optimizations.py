@@ -79,7 +79,7 @@ def trainModel(train_loader, modelName="myModel", dtype="fp32"):
     torch.save({
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
-    }, 'checkpoint_%s.pth' % modelName)
+    }, 'checkpoint_%s.pth' %modelName)
 
     return training_time
 
