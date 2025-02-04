@@ -75,8 +75,10 @@ class HarvesterMaintenance:
         logger.info("Reading the dataset from %s...", file)
         try:
             data = pd.read_pickle(file)
-        except FileNotFoundError:
-            sys.exit("Dataset file not found")
+            if not isinstance(data, pd.DataFrame):
+                sys.exit("Invalid data format")
+        except Exception as e:
+            sys.exit(f"Error reading dataset: {e}")
 
         X = data.drop("Asset_Label", axis=1)
         y = data.Asset_Label
