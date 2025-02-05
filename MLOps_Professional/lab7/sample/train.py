@@ -2,6 +2,10 @@
 Module to train and prediction using XGBoost Classifier
 """
 
+# !/usr/bin/env python
+# coding: utf-8
+# pylint: disable=import-error
+
 import os
 import sys
 import logging
@@ -17,9 +21,8 @@ import daal4py as d4p
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import RobustScaler
 
-# !/usr/bin/env python
-# coding: utf-8
-# pylint: disable=import-error
+SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "lab7")
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 warnings.filterwarnings("ignore")
@@ -206,11 +209,16 @@ class HarvesterMaintenance:
         """
 
         self.model_path = os.path.normpath(
-            os.path.join(model_path, self.model_name + ".joblib")
+            os.path.join(SAFE_BASE_DIR, model_path, self.model_name + ".joblib")
         )
+        if not self.model_path.startswith(SAFE_BASE_DIR):
+            raise ValueError("Path is not within the allowed model directory.")
+
         self.scaler_path = os.path.normpath(
-            os.path.join(model_path, self.model_name + "_scaler.joblib")
+            os.path.join(SAFE_BASE_DIR, model_path, self.model_name + "_scaler.joblib")
         )
+        if not self.scaler_path.startswith(SAFE_BASE_DIR):
+            raise ValueError("Path is not within the allowed model directory.")
 
         logger.info("Saving model")
         with open(self.model_path, "wb") as fh:
