@@ -103,7 +103,7 @@ jobs:
       uses: rsdmike/github-security-report-action@a149b24539044c92786ec39af8ba38c93496495d # v3.0.4
       with:
         template: report
-        token: ${{ secrets.CODEQL_GENERATE_SECURITY_REPORT_TOKEN }}
+        token: ${{ secrets.CODEQL_GENERATE_SECURITY_REPORT_TOKEN_2 }}
     - name: GitHub Upload Release Artifacts
       uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
       with:
