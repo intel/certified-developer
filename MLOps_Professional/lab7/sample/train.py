@@ -20,6 +20,7 @@ import daal4py as d4p
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import RobustScaler
+from werkzeug.utils import secure_filename
 
 SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "lab7")
 
@@ -208,14 +209,19 @@ class HarvesterMaintenance:
             path where trained model should be saved
         """
 
+        sanitized_model_path = secure_filename(model_path)
         self.model_path = os.path.normpath(
-            os.path.join(SAFE_BASE_DIR, model_path, self.model_name + ".joblib")
+            os.path.join(
+                SAFE_BASE_DIR, sanitized_model_path, self.model_name + ".joblib"
+            )
         )
         if not self.model_path.startswith(SAFE_BASE_DIR):
             raise ValueError("Path is not within the allowed model directory.")
 
         self.scaler_path = os.path.normpath(
-            os.path.join(SAFE_BASE_DIR, model_path, self.model_name + "_scaler.joblib")
+            os.path.join(
+                SAFE_BASE_DIR, sanitized_model_path, self.model_name + "_scaler.joblib"
+            )
         )
         if not self.scaler_path.startswith(SAFE_BASE_DIR):
             raise ValueError("Path is not within the allowed model directory.")
