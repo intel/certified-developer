@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-'''
+"""
 ==============================================================
  Copyright © 2022 Intel Corporation
 
  SPDX-License-Identifier: MIT
 ==============================================================
-'''
+"""
 
+import os
 from time import time
 import torch
 import torchvision
@@ -16,10 +17,11 @@ import intel_extension_for_pytorch as ipex
 import argparse
 
 # Hyperparameters and constants
+SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "lab5")
 LR = 0.001
 MOMENTUM = 0.9
 DOWNLOAD = True
-DATA = 'datasets/cifar10/'
+DATA = "datasets/cifar10/"
 
 """
 Function to run a test case
@@ -46,7 +48,8 @@ def trainModel(train_loader, modelName="myModel", dtype="fp32"):
     # Optimize with BF16 or FP32 (default)
     if "bf16" == dtype:
         model, optimizer = ipex.optimize(
-            model, optimizer=optimizer, dtype=torch.bfloat16)
+            model, optimizer=optimizer, dtype=torch.bfloat16
+        )
     else:
         model, optimizer = ipex.optimize(model, optimizer=optimizer)
 
@@ -56,7 +59,7 @@ def trainModel(train_loader, modelName="myModel", dtype="fp32"):
     for batch_idx, (data, target) in enumerate(train_loader):
         optimizer.zero_grad()
         if "bf16" == dtype:
-            with torch.cpu.amp.autocast():   # Auto Mixed Precision
+            with torch.cpu.amp.autocast():  # Auto Mixed Precision
                 # Setting memory_format to torch.channels_last could improve performance with 4D input data. This is optional.
                 data = data.to(memory_format=torch.channels_last)
                 output = model(data)
@@ -76,10 +79,16 @@ def trainModel(train_loader, modelName="myModel", dtype="fp32"):
     print("Training took %.3f seconds" % (training_time))
 
     # Save a checkpoint of the trained model
-    torch.save({
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-    }, 'checkpoint_%s.pth' % modelName)
+    checkpoint = {
+        "model_state_dict": model.state_dict(),
+        "optimizer_state_dict": optimizer.state_dict(),
+    }
+
+    checkpoint_filename = f"checkpoint_{modelName}.pth"
+    checkpoint_path = os.path.normpath(os.path.join(SAFE_BASE_DIR, checkpoint_filename))
+    if not checkpoint_path.startswith(SAFE_BASE_DIR):
+        raise ValueError("Path is not within the allowed model directory.")
+    torch.save(checkpoint, checkpoint_path)
 
     return training_time
 
@@ -92,10 +101,12 @@ Perform all types of training in main function
 def main(FLAGS):
     # Check if hardware supports AMX
     import sys
-    sys.path.append('../../')
+
+    sys.path.append("../../")
     from cpuinfo import get_cpu_info
+
     info = get_cpu_info()
-    flags = info['flags']
+    flags = info["flags"]
     amx_supported = False
     for flag in flags:
         if "amx" in flag:
@@ -106,11 +117,13 @@ def main(FLAGS):
         return
 
     # Load dataset
-    transform = torchvision.transforms.Compose([
-        torchvision.transforms.Resize((224, 224)),
-        torchvision.transforms.ToTensor(),
-        torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-    ])
+    transform = torchvision.transforms.Compose(
+        [
+            torchvision.transforms.Resize((224, 224)),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+        ]
+    )
     train_dataset = torchvision.datasets.CIFAR10(
         root=DATA,
         train=True,
@@ -118,30 +131,30 @@ def main(FLAGS):
         download=DOWNLOAD,
     )
     train_loader = torch.utils.data.DataLoader(
-        dataset=train_dataset,
-        batch_size=FLAGS.batch_size
+        dataset=train_dataset, batch_size=FLAGS.batch_size
     )
 
     # Train models and acquire training times
     print(f"Training model with {FLAGS.data_type}")
     training_time = trainModel(
-        train_loader, modelName=f"{FLAGS.data_type}", dtype=f"{FLAGS.data_type}")
+        train_loader, modelName=f"{FLAGS.data_type}", dtype=f"{FLAGS.data_type}"
+    )
     print("Summary")
     print("training time: %.3f" % training_time)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-dtype',
-                        '--data_type',
-                        type=str,
-                        default="fp32",
-                        help="pytorch data type options available are fp32 and bf16")
-    parser.add_argument('-batch',
-                        '--batch_size',
-                        type=int,
-                        default=128,
-                        help="set training batch size")
+    parser.add_argument(
+        "-dtype",
+        "--data_type",
+        type=str,
+        default="fp32",
+        help="pytorch data type options available are fp32 and bf16",
+    )
+    parser.add_argument(
+        "-batch", "--batch_size", type=int, default=128, help="set training batch size"
+    )
     FLAGS = parser.parse_args()
     main(FLAGS)
-    print('[CODE_SAMPLE_COMPLETED_SUCCESFULLY]')
+    print("[CODE_SAMPLE_COMPLETED_SUCCESFULLY]")
