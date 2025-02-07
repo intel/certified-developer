@@ -79,7 +79,7 @@ async def ping():
 
 @app.post("/predict")
 async def predict(payload: GenPayload):
-    bot = PickerBot(payload.data, model=gptj)
+    bot = PickerBot(payload.data, model=gptj, safe_root="/safe/root/directory")
     bot.data_proc()
     bot.create_vectorstore()
     response = bot.inference(user_input=payload.user_input)
