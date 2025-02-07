@@ -200,12 +200,13 @@ class RoboMaintenance:
         """
 
         sanitized_model_path = secure_filename(model_path)
-        self.scaler_path = os.path.normpath(
-            os.path.join(
-                SAFE_BASE_DIR, sanitized_model_path, self.model_name + "_scaler.joblib"
-            )
+        normalized_model_path = os.path.normpath(sanitized_model_path)
+        self.scaler_path = os.path.join(
+            SAFE_BASE_DIR, normalized_model_path, self.model_name + "_scaler.joblib"
         )
-        if not self.scaler_path.startswith(SAFE_BASE_DIR):
+        if not os.path.commonpath([SAFE_BASE_DIR, self.scaler_path]).startswith(
+            SAFE_BASE_DIR
+        ):
             raise ValueError("Path is not within the allowed model directory.")
 
         logger.info("Saving Scaler")
