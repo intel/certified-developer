@@ -15,6 +15,7 @@ import torch
 import torchvision
 import intel_extension_for_pytorch as ipex
 import argparse
+from safetensors.torch import save_file
 
 # Hyperparameters and constants
 SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "lab5")
@@ -84,11 +85,11 @@ def trainModel(train_loader, modelName="myModel", dtype="fp32"):
         "optimizer_state_dict": optimizer.state_dict(),
     }
 
-    checkpoint_filename = f"checkpoint_{modelName}.pth"
+    checkpoint_filename = f"checkpoint_{modelName}.safetensors"
     checkpoint_path = os.path.normpath(os.path.join(SAFE_BASE_DIR, checkpoint_filename))
     if not checkpoint_path.startswith(SAFE_BASE_DIR):
         raise ValueError("Path is not within the allowed model directory.")
-    torch.save(checkpoint, checkpoint_path)
+    save_file(checkpoint, checkpoint_path)
 
     return training_time
 
