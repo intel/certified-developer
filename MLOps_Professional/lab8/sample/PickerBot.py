@@ -10,21 +10,22 @@ import pandas as pd
 import time
 import os
 
+SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "lab8")
+
 
 class PickerBot:
-
-    def __init__(self, data, model, safe_root="/safe/root/directory"):
+    def __init__(self, data, model, safe_root="SAFE_BASE_DIR"):
         self.safe_root = safe_root
         self.data = self._validate_path(data)
         self.model = model
 
-        def _validate_path(self, path):
-            # Normalize the path
-            fullpath = os.path.normpath(os.path.join(self.safe_root, path))
-            # Ensure the path is within the safe root directory
-            if not fullpath.startswith(self.safe_root):
-                raise ValueError("Invalid path: Access denied")
-            return fullpath
+    def _validate_path(self, path):
+        # Normalize the path
+        fullpath = os.path.normpath(os.path.join(self.safe_root, path))
+        # Ensure the path is within the safe root directory
+        if not fullpath.startswith(self.safe_root):
+            raise ValueError("Invalid path: Access denied")
+        return fullpath
 
     def data_proc(self):
 

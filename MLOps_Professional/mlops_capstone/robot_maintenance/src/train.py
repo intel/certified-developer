@@ -1,10 +1,10 @@
+#!/usr/bin/env python
+# coding: utf-8
+# pylint: disable=import-error
+
 """
 Module to train and prediction using XGBoost Classifier
 """
-
-# !/usr/bin/env python
-# coding: utf-8
-# pylint: disable=import-error
 
 import os
 import sys
@@ -77,8 +77,12 @@ class RoboMaintenance:
 
         # Generating our data
         logger.info("Reading the dataset from %s...", file)
+        if not file.startswith(os.path.abspath(SAFE_BASE_DIR) + os.sep):
+            raise ValueError(
+                f"Path is not within the allowed directory {SAFE_BASE_DIR}"
+            )
         try:
-            data = pd.read_pickle(file)
+            data = pd.read_parquet(file)
             if not isinstance(data, pd.DataFrame):
                 sys.exit("Invalid data format")
         except Exception as e:
@@ -200,13 +204,13 @@ class RoboMaintenance:
         """
 
         sanitized_model_path = secure_filename(model_path)
-        normalized_model_path = os.path.normpath(sanitized_model_path)
-        self.scaler_path = os.path.join(
-            SAFE_BASE_DIR, normalized_model_path, self.model_name + "_scaler.joblib"
+        self.scaler_path = os.path.normpath(
+            os.path.join(
+                SAFE_BASE_DIR, sanitized_model_path, self.model_name + "_scaler.joblib"
+            )
         )
-        if not os.path.commonpath([SAFE_BASE_DIR, self.scaler_path]).startswith(
-            SAFE_BASE_DIR
-        ):
+        self.scaler_path = os.path.abspath(self.scaler_path)
+        if not self.scaler_path.startswith(os.path.abspath(SAFE_BASE_DIR) + os.sep):
             raise ValueError("Path is not within the allowed model directory.")
 
         logger.info("Saving Scaler")
