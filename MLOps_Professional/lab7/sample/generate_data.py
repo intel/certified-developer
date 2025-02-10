@@ -139,7 +139,6 @@ logger.info(
 )
 
 # save data to parquet file
-train_path = FLAGS.save_path
 logger.info("Saving the data to %s ...", train_path)
 data.to_parquet(train_path)
 logger.info("DONE")

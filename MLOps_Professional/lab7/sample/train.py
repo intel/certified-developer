@@ -232,6 +232,10 @@ class HarvesterMaintenance:
         if not self.scaler_path.startswith(os.path.abspath(SAFE_BASE_DIR) + os.sep):
             raise ValueError("Path is not within the allowed model directory.")
 
+        logger.info("Saving model")
+        with open(self.model_path, "wb") as fh:
+            joblib.dump(self.d4p_model, fh.name)
+
         logger.info("Saving Scaler")
         with open(self.scaler_path, "wb") as fh:
             joblib.dump(self.robust_scaler, fh.name)
