@@ -9,6 +9,8 @@ from model import GenPayload
 from PickerBot import PickerBot
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
+SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "lab8")
+
 app = FastAPI()
 
 
@@ -79,7 +81,7 @@ async def ping():
 
 @app.post("/predict")
 async def predict(payload: GenPayload):
-    bot = PickerBot(payload.data, model=gptj)
+    bot = PickerBot(payload.data, model=gptj, safe_root=SAFE_BASE_DIR)
     bot.data_proc()
     bot.create_vectorstore()
     response = bot.inference(user_input=payload.user_input)
