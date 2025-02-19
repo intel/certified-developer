@@ -1,10 +1,10 @@
 daal4py==2023.1.0
-pydantic==2.4.0
+pydantic==2.10.6
 xgboost==2.1.4
 fastapi==0.109.1 
 numpy==1.24.4
 pandas==2.2.3
 scikit-learn-intelex==2025.2.0
-uvicorn==0.23.2    
+uvicorn==0.34.0    
 mlflow==2.16.0  
-streamlit==1.37.0                        
+streamlit==1.42.0                        
