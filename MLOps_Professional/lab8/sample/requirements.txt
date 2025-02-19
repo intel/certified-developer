@@ -5,4 +5,4 @@ transformers==4.48.3
 datasets==2.14.6
 tiktoken==0.4.0
 chromadb==0.4.15
-sentence_transformers==2.2.2
+sentence_transformers==3.4.1
