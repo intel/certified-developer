@@ -9,6 +9,7 @@ def test_maintenance(temperature: int):
         test parameter for temperature sensor readings
 
     Returns
+    
     -------
     str
         'Approved' or 'Denied' based on temperature readings
