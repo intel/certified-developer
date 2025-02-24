@@ -4,5 +4,5 @@ gpt4all==2.8.2
 transformers==4.48.3
 datasets==3.3.2
 tiktoken==0.4.0
-chromadb==0.4.15
+chromadb==0.6.3
 sentence_transformers==3.4.1
