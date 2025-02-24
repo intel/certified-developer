@@ -1,4 +1,4 @@
-daal4py==2023.1.0
+daal4py==2024.7.0
 pydantic==2.10.6
 xgboost==2.1.4
 fastapi==0.109.1 
