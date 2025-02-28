@@ -31,12 +31,15 @@ Function to run a test case
 
 def trainModel(train_loader, modelName="myModel", dtype="fp32"):
     """
-    Input parameters
-        train_loader: a torch DataLoader object containing the training data
-        modelName: a string representing the name of the model
-        dtype: the data type for model parameters, supported values - fp32, bf16
-    Return value
-        training_time: the time in seconds it takes to train the model
+    Trains a ResNet50 model using the specified data type and data loader.
+
+    Args:
+        train_loader (torch.utils.data.DataLoader): DataLoader object containing the training data.
+        modelName (str): The name of the model.
+        dtype (str): The data type for model parameters, supported values - 'fp32', 'bf16'.
+
+    Returns:
+        float: The time in seconds it takes to train the model.
     """
 
     # Initialize the model
@@ -100,6 +103,12 @@ Perform all types of training in main function
 
 
 def main(FLAGS):
+    """
+    Main function to perform all types of training.
+
+    Args:
+        FLAGS (argparse.Namespace): Parsed command-line arguments.
+    """
     # Check if hardware supports AMX
     import sys
 
@@ -145,6 +154,11 @@ def main(FLAGS):
 
 
 if __name__ == "__main__":
+    """
+    Main entry point for the script.
+
+    This block parses command-line arguments and calls the main function.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-dtype",

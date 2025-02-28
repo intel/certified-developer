@@ -15,7 +15,20 @@ def inference(
     scaler_destination: str,
     data: str,
 ):
+    """
+    Perform inference using a pre-trained model and a robust scaler on the provided data.
 
+    Parameters:
+    model_name (str): The name of the model to be used for inference.
+    stage (str): The stage of the model.
+    model_run_id (int): The run ID of the model in MLflow.
+    scaler_file_name (str): The name of the scaler file to be used for data scaling.
+    scaler_destination (str): The destination path for the scaler.
+    data (str): The input data for inference.
+
+    Returns:
+    str: The maintenance status of the equipment based on the model's prediction.
+    """
     scaler_destination = os.path.normpath(
         os.path.join(SAFE_BASE_DIR, scaler_destination)
     )

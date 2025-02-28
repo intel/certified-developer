@@ -19,9 +19,9 @@ warnings.filterwarnings("ignore")
 async def ping():
     """Ping server to determine status
 
-    Returns
-    -------
-    API response
+    Returns:
+        dict:
+        API response
         response from server on health status
     """
     return {"message": "Server is Running"}
@@ -32,14 +32,12 @@ async def train(payload: TrainPayload):
     """Training Endpoint
     This endpoint process raw data and trains an XGBoost Classifier
 
-    Parameters
-    ----------
-    payload : TrainPayload
+    Args:
+        payload: TrainPayload
         Training endpoint payload model
 
-    Returns
-    -------
-    dict
+    Returns:
+        dict:
         Accuracy metrics and other logger feedback on training progress.
     """
     model = HarvesterMaintenance(payload.model_name)
@@ -61,6 +59,19 @@ async def train(payload: TrainPayload):
 
 @app.post("/predict")
 async def predict(payload: PredictionPayload):
+    """
+    Asynchronously performs prediction based on the provided payload.
+    Args:
+        payload (PredictionPayload): The payload containing the necessary data for prediction, including:
+            - sample (dict): The sample data to be used for prediction.
+            - model_name (str): The name of the model to be used for inference.
+            - stage (str): The stage of the model to be used.
+            - model_run_id (str): The run ID of the model.
+            - scaler_file_name (str): The name of the scaler file.
+            - scaler_destination (str): The destination of the scaler file.
+    Returns:
+        dict: A dictionary containing the message and the maintenance recommendation results.
+    """
 
     sample = pd.json_normalize(payload.sample)
     results = inference(

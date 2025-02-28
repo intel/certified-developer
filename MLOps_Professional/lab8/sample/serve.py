@@ -23,9 +23,22 @@ def load_gpt4allj(
     top_k: int = 1,
     timeout: int = 90,  # Timeout in seconds
 ):
+    """
+    Loads the GPT4All model, downloading it if necessary.
 
+    Args:
+        model_path (str): Path to the model file.
+        n_threads (int, optional): Number of threads to use. Defaults to 6.
+        max_tokens (int, optional): Maximum number of tokens to generate. Defaults to 50.
+        repeat_penalty (float, optional): Penalty for repeated tokens. Defaults to 1.20.
+        n_batch (int, optional): Batch size for processing. Defaults to 6.
+        top_k (int, optional): Number of top tokens to consider. Defaults to 1.
+        timeout (int, optional): Timeout for downloading the model in seconds. Defaults to 90.
+
+    Returns:
+        GPT4All: Loaded GPT4All model.
+    """
     if not os.path.isfile(model_path):
-
         # download model
         url = "https://huggingface.co/nomic-ai/gpt4all-falcon-ggml/resolve/main/ggml-model-gpt4all-falcon-q4_0.bin"
         # send a GET request to the URL to download the file. Stream since it's large
@@ -69,18 +82,26 @@ gptj = load_gpt4allj(
 
 @app.get("/ping")
 async def ping():
-    """Ping server to determine status
+    """
+    Ping the server to check its status.
 
-    Returns
-    -------
-    API response
-        response from server on health status
+    Returns:
+        dict: A response indicating the server's health status.
     """
     return {"message": "Server is Running"}
 
 
 @app.post("/predict")
 async def predict(payload: GenPayload):
+    """
+    Prediction Endpoint
+
+    Args:
+        payload (GenPayload): Prediction endpoint payload model.
+
+    Returns:
+        dict: PickerBot response based on the inference result.
+    """
     bot = PickerBot(payload.data, model=gptj, safe_root=SAFE_BASE_DIR)
     bot.data_proc()
     bot.create_vectorstore()
@@ -89,4 +110,8 @@ async def predict(payload: GenPayload):
 
 
 if __name__ == "__main__":
+    """Main entry point for the server.
+
+    This block runs the FastAPI application using Uvicorn.
+    """
     uvicorn.run("serve:app", host="127.0.0.1", port=5000, log_level="info")
