@@ -29,8 +29,13 @@ warnings.filterwarnings("ignore")
 
 
 class RoboMaintenance:
-
     def __init__(self, model_name: str):
+        """
+        Initializes the RoboMaintenance class with default values.
+
+        Args:
+            model_name (str): Name of the model.
+        """
         self.model_name = model_name
         self.file = ""
         self.y_train = ""
@@ -51,7 +56,14 @@ class RoboMaintenance:
         experiment: str = None,
         new_experiment: str = None,
     ):
+        """
+        Sets up MLFlow tracking.
 
+        Args:
+            tracking_uri (str, optional): URI for MLFlow tracking. Defaults to "./mlflow_tracking".
+            experiment (str, optional): Name of the existing experiment. Defaults to None.
+            new_experiment (str, optional): Name of the new experiment to create if no experiment is specified. Defaults to None.
+        """
         # sets tracking URI
         mlflow.set_tracking_uri(tracking_uri)
 
@@ -65,16 +77,13 @@ class RoboMaintenance:
             self.active_experiment = experiment
 
     def process_data(self, file: str, test_size: int = 0.25):
-        """processes raw data for training
-
-        Parameters
-        ----------
-        file : str
-            path to raw training data
-        test_size : int, optional
-            percentage of data reserved for testing, by default .25
         """
+        Processes raw data for training.
 
+        Args:
+            file (str): Path to raw training data.
+            test_size (int, optional): Percentage of data reserved for testing. Defaults to 0.25.
+        """
         # Generating our data
         logger.info("Reading the dataset from %s...", file)
         if not file.startswith(os.path.abspath(SAFE_BASE_DIR) + os.sep):
@@ -110,7 +119,6 @@ class RoboMaintenance:
         )
 
         del X_train_scaled_transformed["Number_Repairs"]
-
         del X_test_scaled_transformed["Number_Repairs"]
 
         # Dropping the unscaled numerical columns
@@ -140,14 +148,12 @@ class RoboMaintenance:
         )
 
     def train(self, ncpu: int = 4):
-        """trains an XGBoost Classifier and Tracks Models with MLFlow
-
-        Parameters
-        ----------
-        ncpu : int, optional
-            number of CPU threads used for training, by default 4
         """
+        Trains an XGBoost Classifier and tracks models with MLFlow.
 
+        Args:
+            ncpu (int, optional): Number of CPU threads used for training. Defaults to 4.
+        """
         # Set xgboost parameters
         self.parameters = {
             "max_bin": 256,
@@ -174,14 +180,12 @@ class RoboMaintenance:
         self.run_id = mlflow.search_runs(xp, output_format="list")[0].info.run_id
 
     def validate(self):
-        """performs model validation with testing data
-
-        Returns
-        -------
-        float
-            accuracy metric
         """
+        Performs model validation with testing data.
 
+        Returns:
+            float: Accuracy metric.
+        """
         # calculate accuracy
         dtest = xgb.DMatrix(self.X_test_scaled_transformed, self.y_test)
         xgb_prediction = self.xgb_model.predict(dtest)
@@ -195,14 +199,12 @@ class RoboMaintenance:
         return self.accuracy_scr
 
     def save(self, model_path):
-        """Logs scaler as mlflow artifact.
-
-        Parameters
-        ----------
-        model_path : str
-            path where trained model should be saved
         """
+        Logs scaler as MLFlow artifact.
 
+        Args:
+            model_path (str): Path where trained model should be saved.
+        """
         sanitized_model_path = secure_filename(model_path)
         self.scaler_path = os.path.normpath(
             os.path.join(
@@ -217,6 +219,6 @@ class RoboMaintenance:
         with open(self.scaler_path, "wb") as fh:
             joblib.dump(self.robust_scaler, fh.name)
 
-        logger.info("Saving Scaler as MLFLow Artifact")
+        logger.info("Saving Scaler as MLFlow Artifact")
         with mlflow.start_run(self.run_id):
             mlflow.log_artifact(self.scaler_path)

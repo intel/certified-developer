@@ -15,11 +15,31 @@ SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "lab8")
 
 class PickerBot:
     def __init__(self, data, model, safe_root="SAFE_BASE_DIR"):
+        """
+        Initializes the PickerBot class with data and model.
+
+        Args:
+            data (str): Path to the data file.
+            model (Any): The model to be used for inference.
+            safe_root (str, optional): The root directory for safe file operations. Defaults to "SAFE_BASE_DIR".
+        """
         self.safe_root = safe_root
         self.data = self._validate_path(data)
         self.model = model
 
     def _validate_path(self, path):
+        """
+        Validates and normalizes the given path to ensure it is within the safe root directory.
+
+        Args:
+            path (str): The path to be validated.
+
+        Returns:
+            str: The normalized and validated path.
+
+        Raises:
+            ValueError: If the path is not within the safe root directory.
+        """
         # Normalize the path
         fullpath = os.path.normpath(os.path.join(self.safe_root, path))
         # Ensure the path is within the safe root directory
@@ -28,7 +48,10 @@ class PickerBot:
         return fullpath
 
     def data_proc(self):
-
+        """
+        Processes the data by downloading the customer service robot support dialogue from Hugging Face
+        and saving it to a text file if it does not already exist.
+        """
         if not os.path.isfile(self.data):
             # Download the customer service robot support dialogue from hugging face
             dataset = load_dataset(
@@ -51,6 +74,13 @@ class PickerBot:
             print("data already exists in path.")
 
     def create_vectorstore(self, chunk_size: int = 500, overlap: int = 25):
+        """
+        Creates a vector store for the data using text splitting and embeddings.
+
+        Args:
+            chunk_size (int, optional): The size of each text chunk. Defaults to 500.
+            overlap (int, optional): The overlap between text chunks. Defaults to 25.
+        """
         loader = TextLoader(self.data)
         # Text Splitter
         text_splitter = RecursiveCharacterTextSplitter(
@@ -64,6 +94,17 @@ class PickerBot:
     def inference(
         self, user_input: str, context_verbosity: bool = False, top_k: int = 2
     ):
+        """
+        Performs inference using the provided user input and model.
+
+        Args:
+            user_input (str): The user input for the inference.
+            context_verbosity (bool, optional): Whether to print the retrieved context information. Defaults to False.
+            top_k (int, optional): The number of top similar documents to retrieve. Defaults to 2.
+
+        Returns:
+            str: The processed response from the model.
+        """
         # perform similarity search and retrieve the context from our documents
         results = self.index.vectorstore.similarity_search(user_input, k=top_k)
         # join all context information into one string

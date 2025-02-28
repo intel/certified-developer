@@ -17,9 +17,8 @@ warnings.filterwarnings("ignore")
 async def ping():
     """Ping server to determine status
 
-    Returns
-    -------
-    API response
+    Returns:
+        dict: API response
         response from server on health status
     """
     return {"message": "Server is Running"}
@@ -30,14 +29,12 @@ async def train(payload: TrainPayload):
     """Training Endpoint
     This endpoint process raw data and trains an XGBoost Classifier
 
-    Parameters
-    ----------
-    payload : TrainPayload
+    Args:
+        payload: TrainPayload
         Training endpoint payload model
 
-    Returns
-    -------
-    dict
+    Returns:
+        dict
         Accuracy metrics and other logger feedback on training progress.
     """
     model = HarvesterMaintenance(payload.model_name)
@@ -58,4 +55,8 @@ async def train(payload: TrainPayload):
 
 
 if __name__ == "__main__":
+    """Main entry point for the server.
+
+    This block runs the FastAPI application using Uvicorn.
+    """
     uvicorn.run("serve:app", host="127.0.0.1", port=5000, log_level="info")

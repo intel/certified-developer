@@ -6,7 +6,12 @@ import time
 
 
 def main(FLAGS):
+    """
+    Main function to perform text generation using Falcon model.
 
+    Args:
+        FLAGS (argparse.Namespace): Parsed command-line arguments.
+    """
     model = f"tiiuae/falcon-{FLAGS.falcon_version}"
 
     tokenizer = AutoTokenizer.from_pretrained(model)
@@ -24,8 +29,7 @@ def main(FLAGS):
 
     while user_input != "stop":
 
-        user_input = input(
-            f"Provide Input to {model} parameter Falcon (not tuned): ")
+        user_input = input(f"Provide Input to {model} parameter Falcon (not tuned): ")
 
         start = time.time()
 
@@ -36,7 +40,8 @@ def main(FLAGS):
                 do_sample=True,
                 top_k=FLAGS.top_k,
                 num_return_sequences=1,
-                eos_token_id=tokenizer.eos_token_id,)
+                eos_token_id=tokenizer.eos_token_id,
+            )
         else:
             break
 
@@ -45,27 +50,38 @@ def main(FLAGS):
         for seq in sequences:
             print(f"Result: {seq['generated_text']}")
 
-        print(f'Total Inference Time: {inference_time:.2f} seconds')
+        print(f"Total Inference Time: {inference_time:.2f} seconds")
 
 
 if __name__ == "__main__":
+    """
+    Main entry point for the script.
+
+    This block parses command-line arguments and calls the main function.
+    """
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-fv',
-                        '--falcon_version',
-                        type=str,
-                        default="7b",
-                        help="select 7b or 40b version of falcon")
-    parser.add_argument('-ml',
-                        '--max_length',
-                        type=int,
-                        default="25",
-                        help="used to control the maximum length of the generated text in text generation tasks")
-    parser.add_argument('-tk',
-                        '--top_k',
-                        type=int,
-                        default="5",
-                        help="specifies the number of highest probability tokens to consider at each step")
+    parser.add_argument(
+        "-fv",
+        "--falcon_version",
+        type=str,
+        default="7b",
+        help="select 7b or 40b version of falcon",
+    )
+    parser.add_argument(
+        "-ml",
+        "--max_length",
+        type=int,
+        default="25",
+        help="used to control the maximum length of the generated text in text generation tasks",
+    )
+    parser.add_argument(
+        "-tk",
+        "--top_k",
+        type=int,
+        default="5",
+        help="specifies the number of highest probability tokens to consider at each step",
+    )
 
     FLAGS = parser.parse_args()
     main(FLAGS)

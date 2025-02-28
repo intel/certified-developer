@@ -17,30 +17,26 @@ warnings.filterwarnings("ignore")
 
 @app.get("/ping")
 async def ping():
-    """Ping server to determine status
+    """
+    Ping server to determine status.
 
-    Returns
-    -------
-    API response
-        response from server on health status
+    Returns:
+        dict: Response from server on health status.
     """
     return {"message": "Server is Running"}
 
 
 @app.post("/train")
 async def train(payload: TrainPayload):
-    """Training Endpoint
-    This endpoint process raw data and trains an XGBoost Classifier
+    """
+    Training Endpoint
+    This endpoint processes raw data and trains an XGBoost Classifier.
 
-    Parameters
-    ----------
-    payload : TrainPayload
-        Training endpoint payload model
+    Args:
+        payload (TrainPayload): Training endpoint payload model.
 
-    Returns
-    -------
-    dict
-        Accuracy metrics and other logger feedback on training progress.
+    Returns:
+        dict: Accuracy metrics and other logger feedback on training progress.
     """
     model = HarvesterMaintenance(payload.model_name)
     model.mlflow_tracking(
@@ -61,7 +57,16 @@ async def train(payload: TrainPayload):
 
 @app.post("/predict")
 async def predict(payload: PredictionPayload):
+    """
+    Prediction Endpoint
+    This endpoint performs inference using a pre-trained model and scaler.
 
+    Args:
+        payload (PredictionPayload): Prediction endpoint payload model.
+
+    Returns:
+        dict: Maintenance recommendation based on the inference result.
+    """
     sample = pd.json_normalize(payload.sample)
     results = inference(
         model_run_id=payload.model_run_id,
@@ -75,4 +80,9 @@ async def predict(payload: PredictionPayload):
 
 
 if __name__ == "__main__":
+    """
+    Main entry point for the server.
+
+    This block runs the FastAPI application using Uvicorn.
+    """
     uvicorn.run("serve:app", host="127.0.0.1", port=5000, log_level="info")

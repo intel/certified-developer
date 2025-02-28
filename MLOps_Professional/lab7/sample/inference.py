@@ -16,7 +16,20 @@ def inference(
     d4p_destination: str,
     data: str,
 ):
+    """
+    Perform inference using a pre-trained model and scaler.
 
+    Args:
+        model_run_id (int): ID of the model run.
+        scaler_file_name (str): Name of the scaler file.
+        scaler_destination (str): Destination path for the scaler file.
+        d4p_file_name (str): Name of the d4p file.
+        d4p_destination (str): Destination path for the d4p file.
+        data (str): Path to the data file.
+
+    Returns:
+        str: Inference result indicating maintenance status.
+    """
     scaler_destination = os.path.normpath(
         os.path.join(SAFE_BASE_DIR, scaler_destination)
     )
