@@ -8,16 +8,16 @@ updates:
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "MLOps_Professional/lab1/sample/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "monthly"
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "MLOps_Professional/lab8/sample/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "monthly"
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "MLOps_Professional/mlops_capstone/robot_maintenance/src/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "monthly"
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "MLOps_Professional/mlops_capstone/app_frontend/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "monthly"
