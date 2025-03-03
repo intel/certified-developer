@@ -1,7 +1,7 @@
 daal4py==2024.7.0
 pydantic==2.10.6
 xgboost==2.1.4
-fastapi==0.115.8 
+fastapi==0.115.11 
 numpy==2.2.3
 pandas==2.2.3
 scikit-learn-intelex==2025.2.0
