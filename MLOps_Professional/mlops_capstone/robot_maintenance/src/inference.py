@@ -17,7 +17,20 @@ def inference(
     scaler_destination: str,
     data: str,
 ):
+    """
+    Perform inference using a pre-trained model and scaler.
 
+    Args:
+        model_name (str): Name of the model to be used for inference.
+        stage (str): Stage of the model to be used for inference.
+        model_run_id (int): ID of the model run.
+        scaler_file_name (str): Name of the scaler file.
+        scaler_destination (str): Destination path for the scaler file.
+        data (str): Path to the data file.
+
+    Returns:
+        str: Inference result indicating maintenance status.
+    """
     scaler_destination = os.path.normpath(
         os.path.join(SAFE_BASE_DIR, scaler_destination)
     )
