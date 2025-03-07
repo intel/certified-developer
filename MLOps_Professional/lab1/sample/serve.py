@@ -2,7 +2,7 @@ import uvicorn
 import logging
 import warnings
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from data_model import MaintenancePayload
 from maintenance import test_maintenance
 
@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore")
 
 
 @app.get("/ping")
-async def ping():
+async def ping() -> dict:
     """Ping server to determine status
 
     Returns:
@@ -26,7 +26,7 @@ async def ping():
 
 
 @app.post("/maintenance")
-async def predict(payload: MaintenancePayload):
+async def predict(payload: MaintenancePayload) -> dict:
     """
     Predicts the maintenance status based on the given payload.
 
@@ -36,8 +36,19 @@ async def predict(payload: MaintenancePayload):
     Returns:
         dict: A dictionary containing the message and maintenance status.
     """
-    maintenance_result = test_maintenance(payload.temperature)
-    return {"msg": "Completed Analysis", "Maintenance Status": maintenance_result}
+    try:
+        # Validate temperature
+        if not isinstance(payload.temperature, (int, float)):
+            raise ValueError("Invalid temperature. It should be a number.")
+
+        maintenance_result = test_maintenance(payload.temperature)
+        return {"msg": "Completed Analysis", "Maintenance Status": maintenance_result}
+    except ValueError as e:
+        logger.error(f"Validation error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 if __name__ == "__main__":
@@ -45,4 +56,7 @@ if __name__ == "__main__":
 
     This block runs the FastAPI application using Uvicorn.
     """
-    uvicorn.run("serve:app", host="127.0.0.1", port=5000, log_level="info")
+    try:
+        uvicorn.run("serve:app", host="127.0.0.1", port=5000, log_level="info")
+    except Exception as e:
+        logger.error(f"Failed to start server: {e}")

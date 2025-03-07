@@ -20,6 +20,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import RobustScaler
 from werkzeug.utils import secure_filename
+from typing import Optional
 
 SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "capstone")
 
@@ -53,9 +54,9 @@ class RoboMaintenance:
     def mlflow_tracking(
         self,
         tracking_uri: str = "./mlflow_tracking",
-        experiment: str = None,
-        new_experiment: str = None,
-    ):
+        experiment: Optional[str] = None,
+        new_experiment: Optional[str] = None,
+    ) -> None:
         """
         Sets up MLFlow tracking.
 
@@ -76,14 +77,24 @@ class RoboMaintenance:
             mlflow.set_experiment(experiment)
             self.active_experiment = experiment
 
-    def process_data(self, file: str, test_size: int = 0.25):
+    def process_data(self, file: str, test_size: float = 0.25) -> None:
         """
         Processes raw data for training.
 
         Args:
             file (str): Path to raw training data.
-            test_size (int, optional): Percentage of data reserved for testing. Defaults to 0.25.
+            test_size (float, optional): Percentage of data reserved for testing. Defaults to 0.25.
         """
+        # Validate file name
+        if not isinstance(file, str) or not file.endswith(".parquet"):
+            raise ValueError(
+                "Invalid file name. It should be a string ending with '.parquet'"
+            )
+
+        # Validate test size
+        if not isinstance(test_size, float) or not (0 < test_size < 1):
+            raise ValueError("Invalid test size. It should be a float between 0 and 1")
+
         # Generating our data
         logger.info("Reading the dataset from %s...", file)
         if not file.startswith(os.path.abspath(SAFE_BASE_DIR) + os.sep):
@@ -147,13 +158,17 @@ class RoboMaintenance:
             {"Motor_Current": "float64"}
         )
 
-    def train(self, ncpu: int = 4):
+    def train(self, ncpu: int = 4) -> None:
         """
         Trains an XGBoost Classifier and tracks models with MLFlow.
 
         Args:
             ncpu (int, optional): Number of CPU threads used for training. Defaults to 4.
         """
+        # Validate ncpu
+        if not isinstance(ncpu, int) or ncpu <= 0:
+            raise ValueError("Invalid ncpu. It should be a positive integer.")
+
         # Set xgboost parameters
         self.parameters = {
             "max_bin": 256,
@@ -179,7 +194,7 @@ class RoboMaintenance:
         xp = mlflow.get_experiment_by_name(self.active_experiment)._experiment_id
         self.run_id = mlflow.search_runs(xp, output_format="list")[0].info.run_id
 
-    def validate(self):
+    def validate(self) -> float:
         """
         Performs model validation with testing data.
 
@@ -198,13 +213,17 @@ class RoboMaintenance:
 
         return self.accuracy_scr
 
-    def save(self, model_path):
+    def save(self, model_path: str) -> None:
         """
         Logs scaler as MLFlow artifact.
 
         Args:
             model_path (str): Path where trained model should be saved.
         """
+        # Validate model path
+        if not isinstance(model_path, str) or not model_path:
+            raise ValueError("Invalid model path. It should be a non-empty string.")
+
         sanitized_model_path = secure_filename(model_path)
         self.scaler_path = os.path.normpath(
             os.path.join(
@@ -216,9 +235,13 @@ class RoboMaintenance:
             raise ValueError("Path is not within the allowed model directory.")
 
         logger.info("Saving Scaler")
-        with open(self.scaler_path, "wb") as fh:
-            joblib.dump(self.robust_scaler, fh.name)
+        try:
+            with open(self.scaler_path, "wb") as fh:
+                joblib.dump(self.robust_scaler, fh.name)
+        except Exception as e:
+            logger.error(f"Failed to save scaler: {e}")
+            raise
 
-        logger.info("Saving Scaler as MLFlow Artifact")
+        logger.info("Saving Scaler as MLFLow Artifact")
         with mlflow.start_run(self.run_id):
             mlflow.log_artifact(self.scaler_path)

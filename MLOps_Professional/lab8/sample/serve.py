@@ -4,7 +4,7 @@ import requests
 
 from tqdm import tqdm
 from langchain.llms import GPT4All
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from model import GenPayload
 from PickerBot import PickerBot
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
@@ -22,7 +22,7 @@ def load_gpt4allj(
     n_batch: int = 6,
     top_k: int = 1,
     timeout: int = 90,  # Timeout in seconds
-):
+) -> GPT4All:
     """
     Loads the GPT4All model, downloading it if necessary.
 
@@ -42,14 +42,21 @@ def load_gpt4allj(
         # download model
         url = "https://huggingface.co/nomic-ai/gpt4all-falcon-ggml/resolve/main/ggml-model-gpt4all-falcon-q4_0.bin"
         # send a GET request to the URL to download the file. Stream since it's large
-        response = requests.get(url, stream=True, timeout=timeout)
+        try:
+            response = requests.get(url, stream=True, timeout=timeout)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            raise RuntimeError(f"Failed to download model: {e}")
 
         # open the file in binary mode and write the contents of the response to it in chunks
         # This is a large file, so be prepared to wait.
-        with open(model_path, "wb") as f:
-            for chunk in tqdm(response.iter_content(chunk_size=10000)):
-                if chunk:
-                    f.write(chunk)
+        try:
+            with open(model_path, "wb") as f:
+                for chunk in tqdm(response.iter_content(chunk_size=10000)):
+                    if chunk:
+                        f.write(chunk)
+        except Exception as e:
+            raise RuntimeError(f"Failed to save model: {e}")
     else:
         print("model already exists in path.")
 
@@ -81,7 +88,7 @@ gptj = load_gpt4allj(
 
 
 @app.get("/ping")
-async def ping():
+async def ping() -> dict:
     """
     Ping the server to check its status.
 
@@ -92,7 +99,7 @@ async def ping():
 
 
 @app.post("/predict")
-async def predict(payload: GenPayload):
+async def predict(payload: GenPayload) -> dict:
     """
     Prediction Endpoint
 
@@ -102,16 +109,34 @@ async def predict(payload: GenPayload):
     Returns:
         dict: PickerBot response based on the inference result.
     """
-    bot = PickerBot(payload.data, model=gptj, safe_root=SAFE_BASE_DIR)
-    bot.data_proc()
-    bot.create_vectorstore()
-    response = bot.inference(user_input=payload.user_input)
-    return {"msg": "Sim Search and Inference Complete", "PickerBot Response": response}
+    try:
+        # Validate inputs
+        if not isinstance(payload.data, str) or not payload.data:
+            raise ValueError("Invalid data path. It should be a non-empty string.")
+        if not isinstance(payload.user_input, str) or not payload.user_input:
+            raise ValueError("Invalid user input. It should be a non-empty string.")
+
+        bot = PickerBot(payload.data, model=gptj, safe_root=SAFE_BASE_DIR)
+        bot.data_proc()
+        bot.create_vectorstore()
+        response = bot.inference(user_input=payload.user_input)
+        return {
+            "msg": "Sim Search and Inference Complete",
+            "PickerBot Response": response,
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 if __name__ == "__main__":
-    """Main entry point for the server.
+    """
+    Main entry point for the server.
 
     This block runs the FastAPI application using Uvicorn.
     """
-    uvicorn.run("serve:app", host="127.0.0.1", port=5000, log_level="info")
+    try:
+        uvicorn.run("serve:app", host="127.0.0.1", port=5000, log_level="info")
+    except Exception as e:
+        logger.error(f"Failed to start server: {e}")

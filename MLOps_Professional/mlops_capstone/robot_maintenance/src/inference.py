@@ -5,6 +5,7 @@ import pandas as pd
 import time
 import os
 import datetime
+from string import Template
 
 SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "capstone")
 
@@ -42,17 +43,31 @@ def inference(
     ) or not scaler_file_path.startswith(SAFE_BASE_DIR):
         raise ValueError("Scalar file path is not within the allowed model directory.")
 
-    # retrieve scaler
-    mlflow.artifacts.download_artifacts(
-        run_id=model_run_id, artifact_path=scaler_file_name, dst_path=scaler_destination
-    )
+    try:
+        # retrieve scaler
+        mlflow.artifacts.download_artifacts(
+            run_id=model_run_id,
+            artifact_path=scaler_file_name,
+            dst_path=scaler_destination,
+        )
+    except Exception as e:
+        raise RuntimeError(f"Failed to retrieve scaler: {e}")
 
-    # load robust scaler
-    with open(scaler_file_path, "rb") as fh:
-        robust_scaler = joblib.load(fh.name)
-
-    # load model
-    model = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{stage}")
+    try:
+        # load robust scaler
+        with open(scaler_file_path, "rb") as fh:
+            robust_scaler = joblib.load(fh.name)
+    except Exception as e:
+        raise RuntimeError(f"Failed to load robust scaler: {e}")
+        try:
+            # load model
+            model_uri_template = Template("models:/$model_name/$stage")
+            model_uri = model_uri_template.substitute(
+                model_name=model_name, stage=stage
+            )
+            model = mlflow.pyfunc.load_model(model_uri=model_uri)
+        except Exception as e:
+            raise RuntimeError(f"Failed to load model: {e}")
 
     # process data sample
     Categorical_Variables = pd.get_dummies(

@@ -71,9 +71,10 @@ class HarvesterMaintenance:
         tracking_uri: str = "./mlruns",
         experiment: str = None,
         new_experiment: str = None,
-    ):
+    ) -> None:
         """
         Sets up MLflow tracking for experiments.
+
         Args:
             tracking_uri (str): The URI where the MLflow tracking server is hosted. Defaults to "./mlruns".
             experiment (str): The name of the existing experiment to use. If None, a new experiment will be created.
@@ -91,13 +92,23 @@ class HarvesterMaintenance:
             mlflow.set_experiment(experiment)
             self.active_experiment = experiment
 
-    def process_data(self, file: str, test_size: int = 0.25):
+    def process_data(self, file: str, test_size: float = 0.25) -> None:
         """Processes raw data for training.
 
         Args:
             file (str): Path to raw training data.
-            test_size (int, optional): Percentage of data reserved for testing. Defaults to 0.25.
+            test_size (float, optional): Percentage of data reserved for testing. Defaults to 0.25.
         """
+
+        # Validate file name
+        if not isinstance(file, str) or not file.endswith(".parquet"):
+            raise ValueError(
+                "Invalid file name. It should be a string ending with '.parquet'"
+            )
+
+        # Validate test size
+        if not isinstance(test_size, float) or not (0 < test_size < 1):
+            raise ValueError("Invalid test size. It should be a float between 0 and 1")
 
         # Generating our data
         logger.info("Reading the dataset from %s...", file)
@@ -134,7 +145,6 @@ class HarvesterMaintenance:
         )
 
         del X_train_scaled_transformed["Number_Repairs"]
-
         del X_test_scaled_transformed["Number_Repairs"]
 
         # Dropping the unscaled numerical columns
@@ -163,12 +173,15 @@ class HarvesterMaintenance:
             {"Motor_Current": "float64"}
         )
 
-    def train(self, ncpu: int = 4):
+    def train(self, ncpu: int = 4) -> None:
         """Trains an XGBoost Classifier and tracks models with MLFlow.
 
         Args:
             ncpu (int, optional): Number of CPU threads used for training. Defaults to 4.
         """
+        # Validate ncpu
+        if not isinstance(ncpu, int) or ncpu <= 0:
+            raise ValueError("Invalid ncpu. It should be a positive integer.")
 
         # Set xgboost parameters
         self.parameters = {
@@ -193,7 +206,7 @@ class HarvesterMaintenance:
 
         self.xgb_model = xgb.train(self.parameters, xgb_train, num_boost_round=100)
 
-    def validate(self):
+    def validate(self) -> float:
         """Performs model validation with testing data.
 
         Returns:
@@ -212,12 +225,15 @@ class HarvesterMaintenance:
 
         return self.accuracy_scr
 
-    def save(self, model_path):
+    def save(self, model_path: str) -> None:
         """Saves trained model and scaler to the specified path.
 
         Args:
             model_path (str): Path where trained model should be saved.
         """
+        # Validate model path
+        if not isinstance(model_path, str) or not model_path:
+            raise ValueError("Invalid model path. It should be a non-empty string.")
 
         sanitized_model_path = secure_filename(model_path)
         self.model_path = os.path.normpath(
@@ -239,9 +255,17 @@ class HarvesterMaintenance:
             raise ValueError("Path is not within the allowed model directory.")
 
         logger.info("Saving model")
-        with open(self.model_path, "wb") as fh:
-            joblib.dump(self.xgb_model, fh.name)
+        try:
+            with open(self.model_path, "wb") as fh:
+                joblib.dump(self.xgb_model, fh.name)
+        except Exception as e:
+            logger.error(f"Failed to save model: {e}")
+            raise
 
         logger.info("Saving Scaler")
-        with open(self.scaler_path, "wb") as fh:
-            joblib.dump(self.robust_scaler, fh.name)
+        try:
+            with open(self.scaler_path, "wb") as fh:
+                joblib.dump(self.robust_scaler, fh.name)
+        except Exception as e:
+            logger.error(f"Failed to save scaler: {e}")
+            raise

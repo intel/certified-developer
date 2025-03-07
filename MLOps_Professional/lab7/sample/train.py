@@ -77,13 +77,23 @@ class HarvesterMaintenance:
             mlflow.set_experiment(experiment)
             self.active_experiment = experiment
 
-    def process_data(self, file: str, test_size: int = 0.25):
+    def process_data(self, file: str, test_size: float = 0.25):
         """Processes raw data for training.
 
         Args:
             file (str): Path to raw training data.
-            test_size (int, optional): Percentage of data reserved for testing. Defaults to 0.25.
+            test_size (float, optional): Percentage of data reserved for testing. Defaults to 0.25.
         """
+        # Validate file name
+        if not isinstance(file, str) or not file.endswith(".parquet"):
+            raise ValueError(
+                "Invalid file name. It should be a string ending with '.parquet'"
+            )
+
+        # Validate test size
+        if not isinstance(test_size, float) or not (0 < test_size < 1):
+            raise ValueError("Invalid test size. It should be a float between 0 and 1")
+
         # Generating our data
         logger.info("Reading the dataset from %s...", file)
         if not file.startswith(os.path.abspath(SAFE_BASE_DIR) + os.sep):
@@ -153,6 +163,10 @@ class HarvesterMaintenance:
         Args:
             ncpu (int, optional): Number of CPU threads used for training. Defaults to 4.
         """
+        # Validate ncpu
+        if not isinstance(ncpu, int) or ncpu <= 0:
+            raise ValueError("Invalid ncpu. It should be a positive integer.")
+
         # Set xgboost parameters
         self.parameters = {
             "max_bin": 256,
@@ -212,6 +226,10 @@ class HarvesterMaintenance:
         Args:
             model_path (str): Path where trained model should be saved.
         """
+        # Validate model path
+        if not isinstance(model_path, str) or not model_path:
+            raise ValueError("Invalid model path. It should be a non-empty string.")
+
         sanitized_model_path = secure_filename(model_path)
         self.model_path = os.path.normpath(
             os.path.join(
