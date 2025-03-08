@@ -5,67 +5,110 @@ import argparse
 import time
 
 
-def main(FLAGS):
+def main(FLAGS: argparse.Namespace) -> None:
+    """
+    Main function to perform text generation using Falcon model.
 
-    model = f"tiiuae/falcon-{FLAGS.falcon_version}"
+    Args:
+        FLAGS (argparse.Namespace): Parsed command-line arguments.
+    """
+    try:
+        # Validate falcon_version
+        if FLAGS.falcon_version not in ["7b", "40b"]:
+            raise ValueError(
+                "Invalid falcon version. Supported values are '7b' and '40b'."
+            )
 
-    tokenizer = AutoTokenizer.from_pretrained(model)
+        # Validate max_length
+        if not isinstance(FLAGS.max_length, int) or FLAGS.max_length <= 0:
+            raise ValueError("Invalid max length. It should be a positive integer.")
 
-    generator = transformers.pipeline(
-        "text-generation",
-        model=model,
-        tokenizer=tokenizer,
-        torch_dtype=torch.bfloat16,
-        trust_remote_code=True,
-        device_map="auto",
-    )
+        # Validate top_k
+        if not isinstance(FLAGS.top_k, int) or FLAGS.top_k <= 0:
+            raise ValueError("Invalid top_k. It should be a positive integer.")
 
-    user_input = "start"
+        model = f"tiiuae/falcon-{FLAGS.falcon_version}"
 
-    while user_input != "stop":
+        tokenizer = AutoTokenizer.from_pretrained(model)
 
-        user_input = input(
-            f"Provide Input to {model} parameter Falcon (not tuned): ")
+        generator = transformers.pipeline(
+            "text-generation",
+            model=model,
+            tokenizer=tokenizer,
+            torch_dtype=torch.bfloat16,
+            trust_remote_code=True,
+            device_map="auto",
+        )
 
-        start = time.time()
+        user_input = "start"
 
-        if user_input != "stop":
-            sequences = generator(
-                f""" {user_input}""",
-                max_length=FLAGS.max_length,
-                do_sample=True,
-                top_k=FLAGS.top_k,
-                num_return_sequences=1,
-                eos_token_id=tokenizer.eos_token_id,)
-        else:
-            break
+        while user_input != "stop":
 
-        inference_time = time.time() - start
+            user_input = input(
+                f"Provide Input to {model} parameter Falcon (not tuned): "
+            )
 
-        for seq in sequences:
-            print(f"Result: {seq['generated_text']}")
+            start = time.time()
 
-        print(f'Total Inference Time: {inference_time:.2f} seconds')
+            if user_input != "stop":
+                sequences = generator(
+                    f""" {user_input}""",
+                    max_length=FLAGS.max_length,
+                    do_sample=True,
+                    top_k=FLAGS.top_k,
+                    num_return_sequences=1,
+                    eos_token_id=tokenizer.eos_token_id,
+                )
+            else:
+                break
+
+            inference_time = time.time() - start
+
+            for seq in sequences:
+                print(f"Result: {seq['generated_text']}")
+
+            print(f"Total Inference Time: {inference_time:.2f} seconds")
+    except ValueError as e:
+        print(f"Validation error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
 
 if __name__ == "__main__":
+    """
+    Main entry point for the script.
+
+    This block parses command-line arguments and calls the main function.
+    """
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-fv',
-                        '--falcon_version',
-                        type=str,
-                        default="7b",
-                        help="select 7b or 40b version of falcon")
-    parser.add_argument('-ml',
-                        '--max_length',
-                        type=int,
-                        default="25",
-                        help="used to control the maximum length of the generated text in text generation tasks")
-    parser.add_argument('-tk',
-                        '--top_k',
-                        type=int,
-                        default="5",
-                        help="specifies the number of highest probability tokens to consider at each step")
+    parser.add_argument(
+        "-fv",
+        "--falcon_version",
+        type=str,
+        default="7b",
+        help="select 7b or 40b version of falcon",
+    )
+    parser.add_argument(
+        "-ml",
+        "--max_length",
+        type=int,
+        default=25,
+        help="used to control the maximum length of the generated text in text generation tasks",
+    )
+    parser.add_argument(
+        "-tk",
+        "--top_k",
+        type=int,
+        default=5,
+        help="specifies the number of highest probability tokens to consider at each step",
+    )
 
     FLAGS = parser.parse_args()
-    main(FLAGS)
+
+    try:
+        main(FLAGS)
+    except ValueError as e:
+        print(f"Validation error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")

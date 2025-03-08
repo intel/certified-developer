@@ -16,6 +16,23 @@ warnings.filterwarnings("ignore")
 
 SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "lab3")
 
+
+def validate_inputs(size: int, save_path: str) -> None:
+    """Validates the command line inputs.
+
+    Args:
+        size (int): The size of the dataset to generate.
+        save_path (str): The path to save the generated dataset.
+
+    Raises:
+        ValueError: If any of the inputs are invalid.
+    """
+    if not isinstance(size, int) or size <= 0:
+        raise ValueError("Invalid size. It should be a positive integer.")
+    if not isinstance(save_path, str) or not save_path:
+        raise ValueError("Invalid save path. It should be a non-empty string.")
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "-s", "--size", type=int, required=False, default=25000, help="data size"
@@ -28,8 +45,15 @@ parser.add_argument(
     help="path to the output Parquet file within the safe directory",
 )
 FLAGS = parser.parse_args()
-dsize = FLAGS.size
 
+# Validate inputs
+try:
+    validate_inputs(FLAGS.size, FLAGS.save_path)
+except ValueError as e:
+    logger.error(f"Validation error: {e}")
+    raise
+
+dsize = FLAGS.size
 train_path = FLAGS.save_path
 train_path = os.path.abspath(os.path.normpath(os.path.join(SAFE_BASE_DIR, train_path)))
 
@@ -139,6 +163,10 @@ logger.info(
 )
 
 # save data to parquet file
-logger.info("Saving the data to %s ...", train_path)
-data.to_parquet(train_path)
-logger.info("DONE")
+try:
+    logger.info("Saving the data to %s ...", train_path)
+    data.to_parquet(train_path)
+    logger.info("DONE")
+except Exception as e:
+    logger.error(f"Failed to save data: {e}")
+    raise
