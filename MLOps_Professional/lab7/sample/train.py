@@ -193,7 +193,7 @@ class HarvesterMaintenance:
         xp = mlflow.get_experiment_by_name(self.active_experiment)._experiment_id
         self.run_id = mlflow.search_runs(xp, output_format="list")[0].info.run_id
 
-    def validate(self):
+    def validate(self) -> float:
         """Performs model validation with testing data.
 
         Returns:

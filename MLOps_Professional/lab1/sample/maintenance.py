@@ -1,7 +1,7 @@
 # maintenance test business logic
 
 
-def test_maintenance(temperature: int):
+def test_maintenance(temperature: int) -> str:
     """Tests the maintenance status based on temperature sensor readings.
 
     Args:

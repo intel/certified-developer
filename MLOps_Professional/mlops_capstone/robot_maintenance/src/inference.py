@@ -17,7 +17,7 @@ def inference(
     scaler_file_name: str,
     scaler_destination: str,
     data: str,
-):
+) -> str:
     """
     Perform inference using a pre-trained model and scaler.
 
