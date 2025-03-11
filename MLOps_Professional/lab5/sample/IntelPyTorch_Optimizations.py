@@ -29,14 +29,21 @@ Function to run a test case
 """
 
 
-def trainModel(train_loader, modelName="myModel", dtype="fp32"):
+def trainModel(
+    train_loader: torch.utils.data.DataLoader,
+    modelName: str = "myModel",
+    dtype: str = "fp32",
+) -> float:
     """
-    Input parameters
-        train_loader: a torch DataLoader object containing the training data
-        modelName: a string representing the name of the model
-        dtype: the data type for model parameters, supported values - fp32, bf16
-    Return value
-        training_time: the time in seconds it takes to train the model
+    Trains a ResNet50 model using the specified data type and data loader.
+
+    Args:
+        train_loader (torch.utils.data.DataLoader): DataLoader object containing the training data.
+        modelName (str): The name of the model.
+        dtype (str): The data type for model parameters, supported values - 'fp32', 'bf16'.
+
+    Returns:
+        float: The time in seconds it takes to train the model.
     """
 
     # Initialize the model
@@ -89,7 +96,11 @@ def trainModel(train_loader, modelName="myModel", dtype="fp32"):
     checkpoint_path = os.path.normpath(os.path.join(SAFE_BASE_DIR, checkpoint_filename))
     if not checkpoint_path.startswith(SAFE_BASE_DIR):
         raise ValueError("Path is not within the allowed model directory.")
-    save_file(checkpoint, checkpoint_path)
+    try:
+        save_file(checkpoint, checkpoint_path)
+    except Exception as e:
+        print(f"Failed to save checkpoint: {e}")
+        raise
 
     return training_time
 
@@ -99,7 +110,13 @@ Perform all types of training in main function
 """
 
 
-def main(FLAGS):
+def main(FLAGS: argparse.Namespace) -> None:
+    """
+    Main function to perform all types of training.
+
+    Args:
+        FLAGS (argparse.Namespace): Parsed command-line arguments.
+    """
     # Check if hardware supports AMX
     import sys
 
@@ -137,14 +154,24 @@ def main(FLAGS):
 
     # Train models and acquire training times
     print(f"Training model with {FLAGS.data_type}")
-    training_time = trainModel(
-        train_loader, modelName=f"{FLAGS.data_type}", dtype=f"{FLAGS.data_type}"
-    )
-    print("Summary")
-    print("training time: %.3f" % training_time)
+    try:
+        training_time = trainModel(
+            train_loader, modelName=f"{FLAGS.data_type}", dtype=f"{FLAGS.data_type}"
+        )
+        print("Summary")
+        print("training time: %.3f" % training_time)
+    except ValueError as e:
+        print(f"Validation error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
 
 if __name__ == "__main__":
+    """
+    Main entry point for the script.
+
+    This block parses command-line arguments and calls the main function.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-dtype",
@@ -157,5 +184,17 @@ if __name__ == "__main__":
         "-batch", "--batch_size", type=int, default=128, help="set training batch size"
     )
     FLAGS = parser.parse_args()
-    main(FLAGS)
-    print("[CODE_SAMPLE_COMPLETED_SUCCESFULLY]")
+
+    # Validate inputs
+    if FLAGS.data_type not in ["fp32", "bf16"]:
+        raise ValueError("Invalid data type. Supported values are 'fp32' and 'bf16'.")
+    if not isinstance(FLAGS.batch_size, int) or FLAGS.batch_size <= 0:
+        raise ValueError("Invalid batch size. It should be a positive integer.")
+
+    try:
+        main(FLAGS)
+        print("[CODE_SAMPLE_COMPLETED_SUCCESFULLY]")
+    except ValueError as e:
+        print(f"Validation error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
