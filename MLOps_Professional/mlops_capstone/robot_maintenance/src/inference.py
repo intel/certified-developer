@@ -5,6 +5,7 @@ import pandas as pd
 import time
 import os
 import datetime
+from string import Template
 
 SAFE_BASE_DIR = os.path.join(os.path.expanduser("~"), "mlops", "capstone")
 
@@ -16,8 +17,21 @@ def inference(
     scaler_file_name: str,
     scaler_destination: str,
     data: str,
-):
+) -> str:
+    """
+    Perform inference using a pre-trained model and scaler.
 
+    Args:
+        model_name (str): Name of the model to be used for inference.
+        stage (str): Stage of the model to be used for inference.
+        model_run_id (int): ID of the model run.
+        scaler_file_name (str): Name of the scaler file.
+        scaler_destination (str): Destination path for the scaler file.
+        data (str): Path to the data file.
+
+    Returns:
+        str: Inference result indicating maintenance status.
+    """
     scaler_destination = os.path.normpath(
         os.path.join(SAFE_BASE_DIR, scaler_destination)
     )
@@ -29,17 +43,31 @@ def inference(
     ) or not scaler_file_path.startswith(SAFE_BASE_DIR):
         raise ValueError("Scalar file path is not within the allowed model directory.")
 
-    # retrieve scaler
-    mlflow.artifacts.download_artifacts(
-        run_id=model_run_id, artifact_path=scaler_file_name, dst_path=scaler_destination
-    )
+    try:
+        # retrieve scaler
+        mlflow.artifacts.download_artifacts(
+            run_id=model_run_id,
+            artifact_path=scaler_file_name,
+            dst_path=scaler_destination,
+        )
+    except Exception as e:
+        raise RuntimeError(f"Failed to retrieve scaler: {e}")
 
-    # load robust scaler
-    with open(scaler_file_path, "rb") as fh:
-        robust_scaler = joblib.load(fh.name)
-
-    # load model
-    model = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{stage}")
+    try:
+        # load robust scaler
+        with open(scaler_file_path, "rb") as fh:
+            robust_scaler = joblib.load(fh.name)
+    except Exception as e:
+        raise RuntimeError(f"Failed to load robust scaler: {e}")
+        try:
+            # load model
+            model_uri_template = Template("models:/$model_name/$stage")
+            model_uri = model_uri_template.substitute(
+                model_name=model_name, stage=stage
+            )
+            model = mlflow.pyfunc.load_model(model_uri=model_uri)
+        except Exception as e:
+            raise RuntimeError(f"Failed to load model: {e}")
 
     # process data sample
     Categorical_Variables = pd.get_dummies(

@@ -30,8 +30,13 @@ warnings.filterwarnings("ignore")
 
 
 class HarvesterMaintenance:
-
     def __init__(self, model_name: str):
+        """
+        Initializes the HarvesterMaintenance class with default values.
+
+        Args:
+            model_name (str): Name of the model.
+        """
         self.model_name = model_name
         self.file = ""
         self.y_train = ""
@@ -52,7 +57,14 @@ class HarvesterMaintenance:
         experiment: str = None,
         new_experiment: str = None,
     ):
+        """
+        Sets up MLFlow tracking.
 
+        Args:
+            tracking_uri (str, optional): URI for MLFlow tracking. Defaults to "./mlflow_tracking".
+            experiment (str, optional): Name of the existing experiment. Defaults to None.
+            new_experiment (str, optional): Name of the new experiment to create if no experiment is specified. Defaults to None.
+        """
         # sets tracking URI
         mlflow.set_tracking_uri(tracking_uri)
 
@@ -65,16 +77,22 @@ class HarvesterMaintenance:
             mlflow.set_experiment(experiment)
             self.active_experiment = experiment
 
-    def process_data(self, file: str, test_size: int = 0.25):
-        """processes raw data for training
+    def process_data(self, file: str, test_size: float = 0.25):
+        """Processes raw data for training.
 
-        Parameters
-        ----------
-        file : str
-            path to raw training data
-        test_size : int, optional
-            percentage of data reserved for testing, by default .25
+        Args:
+            file (str): Path to raw training data.
+            test_size (float, optional): Percentage of data reserved for testing. Defaults to 0.25.
         """
+        # Validate file name
+        if not isinstance(file, str) or not file.endswith(".parquet"):
+            raise ValueError(
+                "Invalid file name. It should be a string ending with '.parquet'"
+            )
+
+        # Validate test size
+        if not isinstance(test_size, float) or not (0 < test_size < 1):
+            raise ValueError("Invalid test size. It should be a float between 0 and 1")
 
         # Generating our data
         logger.info("Reading the dataset from %s...", file)
@@ -111,7 +129,6 @@ class HarvesterMaintenance:
         )
 
         del X_train_scaled_transformed["Number_Repairs"]
-
         del X_test_scaled_transformed["Number_Repairs"]
 
         # Dropping the unscaled numerical columns
@@ -141,13 +158,14 @@ class HarvesterMaintenance:
         )
 
     def train(self, ncpu: int = 4):
-        """trains an XGBoost Classifier and Tracks Models with MLFlow
+        """Trains an XGBoost Classifier and tracks models with MLFlow.
 
-        Parameters
-        ----------
-        ncpu : int, optional
-            number of CPU threads used for training, by default 4
+        Args:
+            ncpu (int, optional): Number of CPU threads used for training. Defaults to 4.
         """
+        # Validate ncpu
+        if not isinstance(ncpu, int) or ncpu <= 0:
+            raise ValueError("Invalid ncpu. It should be a positive integer.")
 
         # Set xgboost parameters
         self.parameters = {
@@ -175,13 +193,11 @@ class HarvesterMaintenance:
         xp = mlflow.get_experiment_by_name(self.active_experiment)._experiment_id
         self.run_id = mlflow.search_runs(xp, output_format="list")[0].info.run_id
 
-    def validate(self):
-        """performs model validation with testing data
+    def validate(self) -> float:
+        """Performs model validation with testing data.
 
-        Returns
-        -------
-        float
-            accuracy metric
+        Returns:
+            float: Accuracy metric.
         """
         daal_predict_algo = d4p.gbt_classification_prediction(
             nClasses=self.parameters["num_class"],
@@ -205,13 +221,14 @@ class HarvesterMaintenance:
         return self.d4p_acc
 
     def save(self, model_path):
-        """Logs scaler abd d4p models as mlflow artifacts.
+        """Logs scaler and d4p models as MLFlow artifacts.
 
-        Parameters
-        ----------
-        model_path : str
-            path where trained model should be saved
+        Args:
+            model_path (str): Path where trained model should be saved.
         """
+        # Validate model path
+        if not isinstance(model_path, str) or not model_path:
+            raise ValueError("Invalid model path. It should be a non-empty string.")
 
         sanitized_model_path = secure_filename(model_path)
         self.model_path = os.path.normpath(
