@@ -23,3 +23,5 @@ Lab 7: Optimizing the Full Stack with OneAPI
 Lab 8: Retrieval Augmented Generation with PyTorch 2.0 and LangChain
 
 Lab 9: Your First Open Source Contribution
+
+#### NOTE: This code is educational in nature and should not be used in production.
