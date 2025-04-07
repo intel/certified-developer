@@ -1,5 +1,11 @@
 FROM public.ecr.aws/docker/library/python:3.8@sha256:d411270700143fa2683cc8264d9fa5d3279fd3b6afff62ae81ea2f9d070e390c
 
+# Create a non-root user
+RUN useradd -m nonrootuser
+
+# Switch to the non-root user
+USER nonrootuser
+
 # copy assets over to image
 COPY . /pickerbot
 
