@@ -6,5 +6,5 @@ numpy==2.2.3
 pandas==2.2.3
 scikit-learn-intelex==2025.4.0
 uvicorn==0.34.2    
-streamlit==1.45.0                        
+streamlit==1.45.1                        
 mlflow==2.21.2  
