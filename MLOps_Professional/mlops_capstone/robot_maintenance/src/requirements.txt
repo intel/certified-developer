@@ -4,7 +4,7 @@ xgboost==2.1.4
 fastapi==0.115.14 
 numpy==2.2.3
 pandas==2.2.3
-scikit-learn-intelex==2025.4.0
+scikit-learn-intelex==2025.6.1
 uvicorn==0.34.2    
 streamlit==1.45.1                        
 mlflow==3.1.0  
